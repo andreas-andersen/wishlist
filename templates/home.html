@@ -1,0 +1,11 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for wish in object_list %}
+        <div class="wish-entry">
+            <h4>{{ wish.title }}</h4>
+            <p>{{ wish.get_priority_display }}</p>
+        </div>
+    {% endfor %}
+{% endblock content %}
