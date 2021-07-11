@@ -1,0 +1,11 @@
+<!-- templates/wish_new.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>New wish</h3>
+    <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Add">
+    </form>
+{% endblock content %}

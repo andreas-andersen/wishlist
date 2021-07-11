@@ -4,8 +4,8 @@
 {% block content %}
     {% for wish in object_list %}
         <div class="wish-entry">
-            <h4>{{ wish.title }}</h4>
-            <p>{{ wish.get_priority_display }}</p>
+            <h4><a href="{% url 'wish_detail' wish.pk %}"> {{ wish.title }} </a></h4>
+            <p>Priority: {{ wish.get_priority_display }}</p>
         </div>
     {% endfor %}
 {% endblock content %}

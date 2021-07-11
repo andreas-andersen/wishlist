@@ -1,0 +1,22 @@
+<!-- templates/wish_detail.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="wish-detail">
+        <h2>{{ wish.title }}</h2>
+        <p>{{ wish.details }}</p>
+        <p>Priority: {{ wish.get_priority_display}}</p>
+        <hr>
+        <p>
+            <span class="option">
+                <a href="{% url 'wish_update' wish.pk %}">+ Update</a>
+            </span>
+            <span class="option">
+                <a href="{% url 'wish_delete' wish.pk %}">+ Delete</a>
+            </span>
+        </p>
+    </div>
+
+{% endblock content %}

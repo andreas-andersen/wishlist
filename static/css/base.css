@@ -6,9 +6,57 @@ body {
     font-weight: 300;
 }
 
-header h1 a {
-    color: red;
-    font-size: 2em;
+.container {
+    max-width: 60rem;
+    width: 80%;  
+    margin: 0 auto 0 auto;
+}
+
+.top {
+    height: 4rem;
+    margin: 0 auto 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    display: inline-block;
+    order: 1;
+    flex-grow: 1;
+    font-size: 4em;
+}
+
+.new {
+    display: inline-block;
+    order: 2;
+    font-size: 1.5em;
+}
+
+.main {
+    margin: 3em auto 0 auto;
+}
+
+h1 {
+    font-size: 3em;
     font-weight: 100;
     text-decoration: none;
+}
+
+a {
+    color: red;
+    text-decoration: none;
+}
+
+.content {
+    margin: 5em auto 0 auto;
+}
+
+.wish-entry {
+    margin: 0px auto 2em auto;
+}
+
+.option {
+    margin: 0px 0.5em 0 0;
 }
