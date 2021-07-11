@@ -9,7 +9,23 @@
         <header class="container">
             <div class="top">
                 <span class="title"><a href="{% url 'home' %}">{wishlist.app}</a></span>
-                <span class="new"><a href="{% url 'wish_new' %}">+ New</a></span>
+                <div class="login">
+                    {% if user.is_authenticated %}
+                        <span class="login-item">
+                            Hi {{ user.username }}!
+                        </span>
+                        <span class="login-item">
+                            <a href="{% url 'logout' %}">+ Log Out</a>
+                        </span>
+                    {% else %}
+                        <span class="login-item">
+                            <a href="{% url 'login' %}">+ Log In</a>
+                        </span>
+                        <span class="login-item">
+                            <a href="{% url 'signup' %}">+ Sign Up</a>
+                        </span>
+                    {% endif %}
+                </span>
             </div>
         </header>
         <div class="container">

@@ -8,4 +8,10 @@
             <p>Priority: {{ wish.get_priority_display }}</p>
         </div>
     {% endfor %}
+    <hr>
+        <p>
+            <span class="option">
+                <a href="{% url 'wish_new' %}">+ New</a>
+            </span>
+        </p>
 {% endblock content %}
