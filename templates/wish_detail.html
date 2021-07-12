@@ -7,9 +7,12 @@
     <div class="wish-detail">
         <h2>{{ wish.title }}</h2>
         <p>{{ wish.details }}</p>
-        <p>Priority: {{ wish.get_priority_display}}</p>
+        <p>Priority: {{ wish.get_priority_display }}</p>
         <hr>
         <p>
+            <span class="option">
+                <a href="{% url 'wish_list' wish.author.pk %}">&lt;&lt; Back</a>
+            </span>
             <span class="option">
                 <a href="{% url 'wish_update' wish.pk %}">+ Update</a>
             </span>

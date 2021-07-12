@@ -21,13 +21,22 @@
                         <span class="login-item">
                             <a href="{% url 'login' %}">+ Log In</a>
                         </span>
-                        <span class="login-item">
-                            <a href="{% url 'signup' %}">+ Sign Up</a>
-                        </span>
                     {% endif %}
                 </span>
             </div>
         </header>
+        <div class="container">
+            <div class="navbar">
+                {% if user.is_authenticated %}
+                    <div class="navbar-item">
+                        <a href="{% url 'my_lists' %}">+ My lists</a>
+                    </div>
+                    <div class="navbar-item">
+                        <a href="{% url 'received_lists' %}">+ Received lists</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
         <div class="container">
             <div class="main">
                 {% block content %}

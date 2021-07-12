@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>My lists</h3>
+    {% for user in object_list %}
+        <p>{{ user.username }}</p>
+    {% empty %}
+        <p>No wish lists received yet</p>
+    {% endfor %}
+{% endblock content %}

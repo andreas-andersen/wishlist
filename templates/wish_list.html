@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <h2>{{ list_owner }} wish list</h2>
+
+    {% for wish in object_list %}
+        <div class="wish-entry">
+            <h4><a href="{% url 'wish_detail' wish.pk %}"> {{ wish.title }} </a></h4>
+            <p>Details: {{ wish.details }}</p>
+            <p>Priority: {{ wish.get_priority_display }}</p>
+        </div>
+    {% endfor %}
+
+    <hr>
+        <span class="option">
+            <a href="{% url 'my_lists' %}">&lt;&lt; Back</a>
+        </span>
+        <span class="option">
+            <a href="{% url 'wish_new' list_owner_id %}">+ Add</a>
+        </span>
+
+{% endblock content %}

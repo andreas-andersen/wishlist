@@ -1,8 +1,20 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.test.testcases import SimpleTestCase
 from django.urls import reverse
 
 from .models import Wish
+
+
+class HomePageTests(SimpleTestCase):
+
+    def test_home_page_status_code(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_by_name(self):
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.status_code, 200)
 
 
 class WishTests(TestCase):
@@ -32,10 +44,10 @@ class WishTests(TestCase):
         self.assertEqual(f'{self.wish.details}', 'Test Details')
 
     def test_post_list_view(self):
-        response = self.client.get(reverse('home'))
+        response = self.client.get(reverse('wish_list', kwargs={'pk':self.wish.pk}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'A Test Wish')
-        self.assertTemplateUsed(response, 'home.html')
+        self.assertTemplateUsed(response, 'wish_list.html')
 
     def test_post_detail_view(self):
         response = self.client.get('/wish/1/')
@@ -46,7 +58,7 @@ class WishTests(TestCase):
         self.assertTemplateUsed(response, 'wish_detail.html')
 
     def test_wish_create_view(self):
-        response = self.client.post(reverse('wish_new'), {
+        response = self.client.post(reverse('wish_new', kwargs={'author_id': self.user.id}), {
             'title': 'New wish',
             'author': self.user.id,
             'priority': 'HI',
