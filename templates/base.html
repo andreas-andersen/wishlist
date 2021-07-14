@@ -12,7 +12,10 @@
                 <div class="login">
                     {% if user.is_authenticated %}
                         <span class="login-item">
-                            Hi {{ user.username }}!
+                            <span class="login-text-gravatar">
+                                <img src="{{ user.get_gravatar }}" id="gravatar">
+                                <a href="{% url 'home' %}">{{ user.username }}</a> 
+                            </span>
                         </span>
                         <span class="login-item">
                             <a href="{% url 'logout' %}">+ Log Out</a>
@@ -21,6 +24,9 @@
                         <span class="login-item">
                             <a href="{% url 'login' %}">+ Log In</a>
                         </span>
+                        <span class="login-item">
+                            <a href="{% url 'signup' %}">+ Sign Up</a>
+                        </spn>
                     {% endif %}
                 </span>
             </div>
@@ -34,6 +40,11 @@
                     <div class="navbar-item">
                         <a href="{% url 'received_lists' %}">+ Received lists</a>
                     </div>
+                        {% if user.is_leader %}
+                            <div class="navbar-item">
+                                <a href="{% url 'my_groups' %}">+ My Groups</a>
+                            </div>
+                        {% endif %}
                 {% endif %}
             </div>
         </div>

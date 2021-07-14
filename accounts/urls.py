@@ -4,16 +4,22 @@ from .views import (
     SignUpView,
     MyWishListsView,
     RecWishListsView, 
+    GroupCreateView,
+    MyGroupsListView,
+    GroupMembersListView,
 )
 from wishlist.views import (
-    WishCreateView, 
     WishListView,
 )
 
 urlpatterns = [
-    #path('signup/', SignUpView.as_view(), name='signup'),
+    path('signup/', SignUpView.as_view(), name='signup'),
+    path('create_group/', GroupCreateView.as_view(), name='create_group'),
+
     path('my_lists/', MyWishListsView.as_view(), name='my_lists'),
     path('received_lists/', RecWishListsView.as_view(), name='received_lists'),
-    path('<int:pk>/wish_list/', WishListView.as_view(), name='wish_list'), 
-    path('<int:author_id>/new/', WishCreateView.as_view(), name='wish_new'),
+    path('wish_lists/<int:pk>/', WishListView.as_view(), name='wish_list'),     
+    
+    path('my_groups/', MyGroupsListView.as_view(), name='my_groups'), 
+    path('my_groups/<int:pk>/group_list', GroupMembersListView.as_view(), name='group_members'),
 ]

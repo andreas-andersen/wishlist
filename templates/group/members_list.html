@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <p><a href="{% url 'my_groups' %}">&lt;&lt; Back</a></p>
+
+    <h2>Name</h2>
+    
+    {% for user in object_list %}
+        <p>{{ user.username }}</a></p>
+    {% endfor %}
+
+{% endblock content %}

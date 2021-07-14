@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <p><a href="{% url 'home' %}">&lt;&lt; Back</a></p>
+
+    <h2>My Groups</h2>
+
+    {% for group in object_list %}
+        <p><a href="{% url 'group_members' group.pk %}">{{ group.name }}</a></p>
+    {% empty %}
+        <p>No groups found</p>
+    {% endfor %}
+
+    {% if user.is_leader %}
+        <hr>
+        <span class="option">
+            <a href="{% url 'create_group' %}">+ Create New Group</a>
+        </span>
+    {% endif %}
+
+{% endblock content %}

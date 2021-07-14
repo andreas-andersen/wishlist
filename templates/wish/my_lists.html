@@ -3,7 +3,9 @@
 {% block content %}
 
     <p><a href="{% url 'home' %}">&lt;&lt; Back</a></p>
+
     <h2>My lists</h2>
+    
     {% for user in object_list %}
         <p><a href="{% url 'wish_list' user.pk %}">{{ user.username }}</a></p>
     {% endfor %}

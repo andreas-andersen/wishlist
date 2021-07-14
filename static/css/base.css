@@ -4,6 +4,7 @@
 body {
     font-family: 'Open Sans', sans-serif;
     font-weight: 300;
+    margin: 0;
 }
 
 .container {
@@ -33,11 +34,28 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    font-size: 1.5em;
+    align-items: flex-end;
 }
 
 .login-item {
     flex-grow: 1;
+}
+
+.login-text-gravatar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.5em;
+}
+
+#gravatar {
+    border-radius: 50%;
+    margin-right: 0.25em;
+}
+
+#login-action {
+    font-size: 1em;
 }
 
 .navbar {
@@ -79,7 +97,7 @@ a {
     margin: 5em auto 0 auto;
 }
 
-.wish-entry {
+.wish-entry .members-entry {
     margin: 0px auto 2em auto;
 }
 
