@@ -4,20 +4,72 @@
     
     <h2>{{ list_owner }} wish list</h2>
 
-    {% for wish in object_list %}
-        <div class="wish-entry">
-            <h4><a href="{% url 'wish_detail' wish.pk %}"> {{ wish.title }} </a></h4>
-            <p>Details: {{ wish.details }}</p>
-            <p>Priority: {{ wish.get_priority_display }}</p>
-        </div>
-    {% endfor %}
+    <table class="wish-list">
+        <tr class="wish-list-top">
+            <td class="wish-list-items">
+                Items
+            </td>
+            <td class="wish-list-details">
+                Details
+            </td>
+            <td class="wish-list-priority">
+                Priority
+            </td>
+            <td class="wish-list-actions">
+            </td>
+        </tr>
+    
+        {% for wish in object_list %}
+            <tr class="wish-entry">
+                <td class="wish-list-items">
+                    <a href="{% url 'wish_detail' wish.pk %}" class = "item-title">
+                        {{ wish.title }}
+                    </a>
+                </td>
+                <td class="wish-list-details">
+                    {{ wish.details }}
+                </td>
+                <td class="wish-list-priority">
+                    {{ wish.get_priority_display }}
+                </td>
+                <td class="wish-list-actions">
+                    <span>
+                        <a href="">Edit</a> | 
+                        <form id="delete-wish", method="POST" action="{% url 'wish_delete' wish.pk %}">
+                            {% csrf_token %}
+                            <a href="#", onclick="document.getElementById('delete-wish').submit()">
+                                Delete
+                            </a>
+                        </form>
+                    </span>
+                </td>
+            </tr>
+        {% endfor %}
+
+        <tr class="wish-entry">
+            <form id="create-wish", method="POST" action="{% url 'wish_new' list_owner_id %}">
+                {% csrf_token %}
+                <td class="wish-list-items">
+                    {{ form.title }}
+                </td>
+                <td class="wish-list-details">
+                    {{ form.details }}
+                </td>
+                <td class="wish-list-priority">
+                    {{ form.priority }}
+                </td>
+                <td class="wish-list-actions">
+                    <a href="#", onclick="document.getElementById('create-wish').submit()">
+                        + Add
+                    </a>
+                </td>
+            </form>
+        </tr>
+    </table>
 
     <hr>
     <span class="option">
         <a href="{% url 'my_lists' %}">&lt;&lt; Back</a>
-    </span>
-    <span class="option">
-        <a href="{% url 'wish_new' list_owner_id %}">+ Add</a>
     </span>
 
 {% endblock content %}

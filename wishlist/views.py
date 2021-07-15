@@ -1,6 +1,7 @@
 #wishlist/views.py
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from .models import Wish
+from .forms import WishCreationForm
 from accounts.models import CustomUser
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
@@ -23,6 +24,7 @@ class HomePageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        
         if self.request.user.is_authenticated:
             data['screen_name'] = get_name_or_username(self.request.user)
         return data
@@ -33,14 +35,25 @@ class WishDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'wish'
     template_name = 'wish/detail.html'
 
-class WishCreateView(LoginRequiredMixin, CreateView):
+class WishCreateView(
+    LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Wish
     context_object_name = 'wish'
     template_name = 'wish/new.html'
-    fields = ['title', 'author', 'priority', 'details']
+    fields = ['title', 'priority', 'details']
 
-    def get_initial(self):
-        return {'author': CustomUser.objects.get(id=self.kwargs['author_id'])}
+    def form_valid(self, form):
+        form.instance.author = CustomUser.objects.get(id=self.kwargs['author_id'])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('wish_list', kwargs={'pk': self.kwargs['author_id']})
+
+    def test_func(self):
+        wish_author = CustomUser.objects.get(id=self.kwargs['author_id'])
+        responsible_author = wish_author.responsible_by
+        return responsible_author == self.request.user
+
 
 class WishUpdateView(
     LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -58,7 +71,9 @@ class WishDeleteView(LoginRequiredMixin, DeleteView):
     model = Wish
     context_object_name = 'wish'
     template_name = 'wish/delete.html'
-    success_url = reverse_lazy('home')
+
+    def get_success_url(self):
+        return reverse('wish_list', kwargs={'pk': self.get_object().author.pk})
 
 class WishListView(LoginRequiredMixin, ListView):
     model = Wish
@@ -75,11 +90,12 @@ class WishListView(LoginRequiredMixin, ListView):
         data['list_owner_id'] = list_owner.id
         data['list_owner'] = get_possessive_ending(
             get_name_or_username(list_owner))
+        data['form'] = WishCreationForm()
         return data
 
 
 def get_name_or_username(user):
-        if len(user.first_name) > 0:
+        if user.first_name:
             return user.first_name
         else:
             return user.username

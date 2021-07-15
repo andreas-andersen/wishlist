@@ -97,10 +97,72 @@ a {
     margin: 5em auto 0 auto;
 }
 
-.wish-entry .members-entry {
-    margin: 0px auto 2em auto;
+.wish-list {
+    width: 100%;
+    text-align: center;
+    background-color: whitesmoke;
+    margin: 2em auto 0.25em auto;
+    border-spacing: 0em 0.05em;
+}
+
+.wish-list-top {
+    height: 3.5em;
+}
+
+.wish-list-items {
+    width: 20%;
+    text-align: left;
+    padding: 0.5em 2em;
+}
+
+.wish-list-details {
+    width: 50%;
+    text-align: left;
+    padding: 0.5em 2em;
+}
+
+.wish-list-priority, .wish-list-actions {
+    width: 15%;
+    text-align: center;
+    padding: 0.5em;
+}
+
+.wish-entry {
+    height: 4.5rem;
+    background-color: white;
+}
+
+.item-title {
+    font-weight: bold;
+}
+
+#delete-wish {
+    display: inline-block;
+    margin: 0 0 0 0;
+}
+
+#id_title, #id_details {
+    width: 100%;
+}
+
+#id_priority {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+}
+
+input[type="text"] {
+    height: 2em;
+    border-radius: 1em;
+    border: 0.1em solid gray;
+    padding: 0.05em 0.8em
+}
+
+input[type=text]:focus {
+    outline: 0;
+    border: 0.15em solid black;
 }
 
 .option {
-    margin: 0px 0.5em 0 0;
+    margin: 0 0.5em 0 0;
 }
+

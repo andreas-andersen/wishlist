@@ -9,21 +9,19 @@ class Wish(models.Model):
         get_user_model(),
         on_delete=models.CASCADE,
     )
-
     HIGH_PRIORITY = 'HI'
     MEDIUM_PRIORITY = 'MD'
     LOW_PRIORITY = 'LO'
     priority_choices = [
-        (HIGH_PRIORITY, "High"),
-        (MEDIUM_PRIORITY, "Medium"),
-        (LOW_PRIORITY, "Low"),
+        (HIGH_PRIORITY, 'High'),
+        (MEDIUM_PRIORITY, 'Medium'),
+        (LOW_PRIORITY, 'Low'),
     ]
     priority = models.CharField(
         max_length=2,
         choices=priority_choices,
         default=HIGH_PRIORITY
     )
-
     details = models.TextField(blank=True)
 
     def __str__(self):
@@ -33,4 +31,4 @@ class Wish(models.Model):
         return reverse('wish_detail', args=[str(self.id)])
 
     class Meta:
-        verbose_name_plural = "Wishes"
+        verbose_name_plural = 'Wishes'

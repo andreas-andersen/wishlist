@@ -1,8 +1,7 @@
 from accounts.forms import CustomUserCreationForm
-from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from .models import CustomUser
+from .models import CustomGroup, CustomUser
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     UserPassesTestMixin,
@@ -38,7 +37,7 @@ class RecWishListsView(LoginRequiredMixin, ListView):
 
 class GroupCreateView(
     LoginRequiredMixin, UserPassesTestMixin, CreateView):
-    model = Group
+    model = CustomGroup
     template_name = 'registration/group.html'
     fields = ['name']
 
@@ -48,6 +47,8 @@ class GroupCreateView(
     def form_valid(self, form):
         self.object = form.save()
         self.object.user_set.add(self.request.user)
+        self.object.leader = self.request.user
+        self.object.save()
         return HttpResponseRedirect(self.get_success_url(self.object.pk))
 
     def test_func(self):
@@ -59,12 +60,12 @@ class GroupMemberCreateView(
     template_name = 'group/create_member.html'
 
 class MyGroupsListView(LoginRequiredMixin, ListView):
-    model = Group
+    model = CustomGroup
     context_object_name = 'my_groups'
     template_name = 'group/my_groups.html'
 
     def get_queryset(self):
-        return self.request.user.groups.all()
+        return CustomGroup.objects.filter(user = self.request.user)
 
 class GroupMembersListView(
     LoginRequiredMixin, UserPassesTestMixin, ListView):
@@ -73,9 +74,9 @@ class GroupMembersListView(
     template_name = 'group/members.html'
 
     def get_queryset(self):
-        group = Group.objects.get(id=self.kwargs['pk'])
+        group = CustomGroup.objects.get(id=self.kwargs['pk'])
         return group.user_set.all()
 
     def test_func(self):
-        group = Group.objects.get(id=self.kwargs['pk'])
+        group = CustomGroup.objects.get(id=self.kwargs['pk'])
         return self.request.user in group.user_set.all() 

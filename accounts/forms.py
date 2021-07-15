@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.contrib.auth.models import Group
-from .models import CustomUser
+from .models import CustomUser, CustomGroup
+
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -17,14 +17,29 @@ class CustomUserChangeForm(UserChangeForm):
         fields = UserChangeForm.Meta.fields
 
 class CustomGroupAdminForm(forms.ModelForm):
-    class Meta:
-        model = Group
-        exclude = []
 
     users = forms.ModelMultipleChoiceField(
          queryset=CustomUser.objects.all(), 
          required=False,
          widget=FilteredSelectMultiple('users', False)
+    )
+    leader = forms.ModelChoiceField(
+        queryset=CustomUser.objects.all(),
+        to_field_name='username'
+    )
+    DKK = 'DKK'
+    NOK = 'NOK'
+    JPY = '¥'
+    USD = "$"
+    currency_choices = [
+        (DKK, 'DKK'),
+        (NOK, 'NOK'),
+        (JPY, '¥'),
+        (USD, '$'),
+    ]
+    currency = forms.ChoiceField(
+        choices=currency_choices,
+        required=False
     )
 
     def __init__(self, *args, **kwargs):
@@ -39,3 +54,7 @@ class CustomGroupAdminForm(forms.ModelForm):
         instance = super(CustomGroupAdminForm, self).save()
         self.save_m2m()
         return instance
+
+    class Meta:
+        model = CustomGroup
+        exclude = []

@@ -5,7 +5,7 @@ from .forms import (
     CustomUserChangeForm,
     CustomGroupAdminForm,
 )
-from .models import CustomUser
+from .models import CustomGroup, CustomUser
 from django.contrib.auth.models import Group
 
 class CustomUserAdmin(UserAdmin):
@@ -33,8 +33,10 @@ class CustomUserAdmin(UserAdmin):
 
 class CustomGroupAdmin(admin.ModelAdmin):
     form = CustomGroupAdminForm
-    filter_horizontal = ['permissions']
+    model = CustomGroup
+    filter_horizontal = ['permissions',]
+    list_display = ['name', 'leader', 'created', 'deadline',]
 
 admin.site.unregister(Group)
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(Group, CustomGroupAdmin)
+admin.site.register(CustomGroup, CustomGroupAdmin)
