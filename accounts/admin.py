@@ -11,20 +11,25 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ['email', 'username', 'assigned_to', 'responsible_by', 'is_leader',]
+    ordering = ('-email',)
+    list_display = [
+        'email', 'first_name', 'last_name', 
+        'assigned_to', 'responsible_by', 
+        'is_leader', 'is_self_responsible',
+    ]
 
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'password',)}),
+        (None, {'fields': ('email', 'password',)}),
         (None, {'fields': ('first_name', 'last_name',)}),
-        (None, {'fields': ('assigned_to', 'responsible_by', 'is_leader')}),
+        (None, {'fields': ('assigned_to', 'responsible_by', 'is_leader','is_self_responsible',)}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
             'fields': (
-                'username', 'email', 'password1', 'password2', 
+                'email', 'password1', 'password2', 
                 'assigned_to', 'responsible_by',
-                'is_leader',
+                'is_leader', 'is_self_responsible',
             )
         }),
     )

@@ -35,7 +35,7 @@
                 <td class="wish-list-actions">
                     <span>
                         <a href="">Edit</a> | 
-                        <form id="delete-wish", method="POST" action="{% url 'wish_delete' wish.pk %}">
+                        <form id="delete-wish", method="post" action="{% url 'wish_delete' wish.pk %}">
                             {% csrf_token %}
                             <a href="#", onclick="document.getElementById('delete-wish').submit()">
                                 Delete

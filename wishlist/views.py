@@ -1,7 +1,7 @@
 from django.urls import reverse, reverse_lazy
-from pages.views import get_name_or_username, get_possessive_ending
+from pages.views import get_name_or_email, get_possessive_ending
 from .models import Wish
-from .forms import WishCreationForm
+from .forms import WishCreateForm
 from accounts.models import CustomUser
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
@@ -76,6 +76,6 @@ class WishListView(LoginRequiredMixin, ListView):
         list_owner = CustomUser.objects.get(id=self.kwargs['pk'])
         data['list_owner_id'] = list_owner.id
         data['list_owner'] = get_possessive_ending(
-            get_name_or_username(list_owner))
-        data['form'] = WishCreationForm()
+            get_name_or_email(list_owner))
+        data['form'] = WishCreateForm()
         return data

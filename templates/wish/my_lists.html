@@ -7,7 +7,7 @@
     <h2>My lists</h2>
     
     {% for user in object_list %}
-        <p><a href="{% url 'wish_list' user.pk %}">{{ user.username }}</a></p>
+        <p><a href="{% url 'wish_list' user.pk %}">{{ user.email }}</a></p>
     {% endfor %}
 
 {% endblock content %}

@@ -45,13 +45,23 @@ class GroupMemberCreateView(
     def form_valid(self, form):
         form.instance.is_leader = False
         self.object = form.save()
+        if self.object.responsible_by == None:
+            self.object.responsible_by = self.object
+        self.object.save()
         group = CustomGroup.objects.get(pk=self.kwargs['pk'])
         group.user_set.add(self.object)
         return HttpResponseRedirect(self.get_success_url(self.kwargs['pk']))
 
-    """ def test_func(self):
+    def get_form_kwargs(self):
+        kwargs = super(GroupMemberCreateView, self).get_form_kwargs()
+        group = CustomGroup.objects.get(id=self.kwargs['pk'])
+
+        kwargs['group'] = group
+        return kwargs
+
+    def test_func(self):
         current_group = CustomGroup.objects.filter(pk=self.kwargs['pk'])
-        return current_group == self.request.user """
+        return current_group.leader == self.request.user
 
 class MyGroupsListView(LoginRequiredMixin, ListView):
     model = CustomGroup
@@ -76,7 +86,8 @@ class GroupMembersListView(
         group = CustomGroup.objects.get(id=self.kwargs['pk'])
         data['group_id'] = group.id
         data['group_name'] = group.name
-        #data['form'] = WishCreationForm()
+        data['form'] = GroupMemberCreateForm(group=group)
+        data['leader'] = group.leader == self.request.user
         return data
 
     def test_func(self):

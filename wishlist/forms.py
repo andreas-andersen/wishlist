@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from .models import Wish
 from accounts.models import CustomUser
 
-class WishCreationForm(ModelForm):
+class WishCreateForm(ModelForm):
 
     title = forms.CharField(max_length=100)
     author = forms.ModelChoiceField(

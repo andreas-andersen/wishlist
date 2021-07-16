@@ -5,6 +5,8 @@
     <head>
         <title>Andersen's Christmas Wishlist</title>
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        {% block head %}
+        {% endblock head %}
     </head>
     <body>
         <header class="container">
@@ -15,7 +17,7 @@
                         <span class="login-item">
                             <span class="login-text-gravatar">
                                 <img src="{{ user.get_gravatar }}" id="gravatar">
-                                <a href="{% url 'home' %}">{{ user.username }}</a> 
+                                <a href="{% url 'home' %}">{{ user.email }}</a> 
                             </span>
                         </span>
                         <span class="login-item">
