@@ -1,7 +1,6 @@
 #wishlist/urls.py
 from django.urls import path
 from .views import (
-    HomePageView,
     WishDetailView,
     WishCreateView, 
     WishUpdateView,
@@ -9,7 +8,6 @@ from .views import (
 )
 
 urlpatterns = [
-    path('', HomePageView.as_view(), name='home'),
     path('wish/<int:pk>/', 
         WishDetailView.as_view(), name='wish_detail'),
     path('wish/<int:pk>/update/', 

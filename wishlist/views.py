@@ -1,5 +1,5 @@
-#wishlist/views.py
 from django.urls import reverse, reverse_lazy
+from pages.views import get_name_or_username, get_possessive_ending
 from .models import Wish
 from .forms import WishCreationForm
 from accounts.models import CustomUser
@@ -10,24 +10,12 @@ from django.contrib.auth.mixins import (
 from django.views.generic import (
     ListView, 
     DetailView,
-    TemplateView,
 )
 from django.views.generic.edit import (
     CreateView,
     UpdateView, 
     DeleteView,
 )
-
-
-class HomePageView(TemplateView):
-    template_name='home.html'
-
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        
-        if self.request.user.is_authenticated:
-            data['screen_name'] = get_name_or_username(self.request.user)
-        return data
         
 
 class WishDetailView(LoginRequiredMixin, DetailView):
@@ -53,7 +41,6 @@ class WishCreateView(
         wish_author = CustomUser.objects.get(id=self.kwargs['author_id'])
         responsible_author = wish_author.responsible_by
         return responsible_author == self.request.user
-
 
 class WishUpdateView(
     LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -92,13 +79,3 @@ class WishListView(LoginRequiredMixin, ListView):
             get_name_or_username(list_owner))
         data['form'] = WishCreationForm()
         return data
-
-
-def get_name_or_username(user):
-        if user.first_name:
-            return user.first_name
-        else:
-            return user.username
-
-def get_possessive_ending(word):
-        return word + "'" if word[-1] == 's' else word + "'s"
