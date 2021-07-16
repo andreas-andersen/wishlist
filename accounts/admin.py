@@ -3,10 +3,9 @@ from django.contrib.auth.admin import UserAdmin
 from .forms import (
     CustomUserCreationForm, 
     CustomUserChangeForm,
-    CustomGroupAdminForm,
 )
-from .models import CustomGroup, CustomUser
-from django.contrib.auth.models import Group
+from .models import CustomUser
+
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
@@ -25,18 +24,10 @@ class CustomUserAdmin(UserAdmin):
             'fields': (
                 'username', 'email', 'password1', 'password2', 
                 'assigned_to', 'responsible_by',
-                'assigned_to', 'responsible_by', 
                 'is_leader',
             )
         }),
     )
 
-class CustomGroupAdmin(admin.ModelAdmin):
-    form = CustomGroupAdminForm
-    model = CustomGroup
-    filter_horizontal = ['permissions',]
-    list_display = ['name', 'leader', 'created', 'deadline',]
 
-admin.site.unregister(Group)
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(CustomGroup, CustomGroupAdmin)

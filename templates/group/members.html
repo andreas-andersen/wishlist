@@ -4,10 +4,12 @@
 
     <p><a href="{% url 'my_groups' %}">&lt;&lt; Back</a></p>
 
-    <h2>Name</h2>
+    <h2>{{ group_name }}</h2>
     
     {% for user in object_list %}
         <p>{{ user.username }}</a></p>
     {% endfor %}
+
+    <a href="{% url 'create_group_member' group_id %}">Create Group Members</a>
 
 {% endblock content %}
