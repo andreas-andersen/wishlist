@@ -1,25 +1,54 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    
-    <p><a href="{% url 'home' %}">&lt;&lt; Back</a></p>
 
     <h2>My Groups</h2>
 
-    {% for group in object_list %}
-        <p>
-            <a href="{% url 'group_members' group.pk %}">{{ group.name }}</a> <br>
-            Leader: {{ group.leader.first_name }} {{ group.leader.last_name }}
-        </p>
-    {% empty %}
-        <p>No groups found</p>
-    {% endfor %}
+    <table class="list">
+        <tr class="list-top">
+            <td class="groups-list-name">
+                Group Name
+            </td>
+            <td class="groups-list-leader">
+                Leader
+            </td>
+            <td class="groups-list-deadline">
+                Deadline
+            </td>
+        </tr>
+    
+        {% for group in object_list %}
+            <tr class="list-entry">
+                <td class="groups-list-name">
+                    <a href="{% url 'group_members' group.pk %}" class = "list-item-title">
+                        {{ group.name }}
+                    </a>
+                </td>
+                <td class="groups-list-leader">
+                    {{ group.leader.first_name }} {{ group.leader.last_name }}
+                </td>
+                <td class="groups-list-deadline">
+                    {{ group.deadline }}
+                </td>
+            </tr>
+        {% empty %}
+            <p>No groups found</p>
+        {% endfor %}
 
-    {% if user.is_leader %}
-        <hr>
-        <span class="option">
-            <a href="{% url 'create_group' %}">+ Create New Group</a>
-        </span>
-    {% endif %}
+        {% if user.is_leader %}
+            <tr class="list-bottom">
+                <td class="groups-list-create">
+                    <a href="{% url 'create_group' %}">+ Create New Group</a>
+                </td>
+            </tr>
+        {% endif %}
+    </table>
+
+    
+
+    <hr>
+    <span class="option">
+        <a href="{% url 'home' %}">&lt;&lt; Back</a>
+    </span>
 
 {% endblock content %}

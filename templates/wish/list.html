@@ -4,8 +4,8 @@
     
     <h2>{{ list_owner }} wish list</h2>
 
-    <table class="wish-list">
-        <tr class="wish-list-top">
+    <table class="list">
+        <tr class="list-top">
             <td class="wish-list-items">
                 Items
             </td>
@@ -20,7 +20,7 @@
         </tr>
     
         {% for wish in object_list %}
-            <tr class="wish-entry">
+            <tr class="list-entry">
                 <td class="wish-list-items">
                     <a href="{% url 'wish_detail' wish.pk %}" class = "item-title">
                         {{ wish.title }}
@@ -46,8 +46,8 @@
             </tr>
         {% endfor %}
 
-        <tr class="wish-entry">
-            <form id="create-wish", method="POST" action="{% url 'wish_new' list_owner_id %}">
+        <tr class="list-bottom">
+            <form id="create-wish", method="post" action="{% url 'wish_new' list_owner_id %}">
                 {% csrf_token %}
                 <td class="wish-list-items">
                     {{ form.title }}

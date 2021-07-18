@@ -3,28 +3,129 @@
 
 {% block content %}
 
-    <p><a href="{% url 'my_groups' %}">&lt;&lt; Back</a></p>
-
     <h2>{{ group_name }}</h2>
+
+    <table class="list">
+        <tr class="list-top">
+            {% if leader %}
+                <td class="members-list-email">
+                    Email
+                </td>
+            {% endif %}
+            <td class="members-list-name">
+                Name
+            </td>
+            {% if leader %}
+                <td class="wish-list-submitted">
+                    Submitted
+                </td>
+                <td class="wish-list-actions">
+                </td>
+            {% endif %}
+        </tr>
     
-    {% for user in object_list %}
-        <p>{{ user.email }}</a></p>
-    {% endfor %}
+        {% for user in object_list %}
+            <tr class="list-entry">
+                {% if leader %}
+                    <td class="members-list-email">
+                        {% if user.is_self_responsible %}
+                            <a href="" class = "item-title">
+                                {{ user.email }}
+                            </a>
+                        {% endif %}
+                    </td>
+                {% endif %}
+                <td class="members-list-name">
+                    {{ user.first_name }} {{ user.last_name }}
+                </td>
+                {% if leader %}
+                    <td class="wish-list-submitted">
+                        True/False
+                    </td>
+                    <td class="members-list-actions">
+                        {% if leader_id != user.id %}
+                            <span>
+                                <a href="">Edit</a> | 
+                                <form id="delete-wish", method="post" action="">
+                                    {% csrf_token %}
+                                    <a href="#", onclick="document.getElementById('delete-wish').submit()">
+                                        Delete
+                                    </a>
+                                </form>
+                            </span>
+                        {% else %}
+                            Group Leader
+                        {% endif %}
+                    </td>
+                {% endif %}
+            </tr> 
+        {% empty %}
+            <tr class="list-bottom">
+                <td class="list_empty">
+                    No members found
+                </td>
+            </tr>
+        {% endfor %}
+            {% if leader %}
+                <tr class="list-bottom">
+                    <form id="invite-member", method="post" action="{% url 'invite_group_member' group_id %}">
+                        <td class="groups-list-email">
+                            {{ invite_form.email }}
+                        </td>
+                        <td class="groups-list-invite">
+                            <a href="#" onclick="document.getElementById('invite-member').submit()">
+                                + Invite member
+                            </a>
+                        </td>
+                    </form>
+                </tr>
+            {% endif %}
+    </table>
 
     {% if leader %}
-        <form method="post" action="{% url 'create_group_member' group_id %}">
-            {% csrf_token %}
-            {{ form.email }}
-            {{ form.first_name }}
-            {{ form.last_name }}
-            {{ form.is_self_responsible }}
-            {{ form.responsible_by }}
-            <button type="submit">Create</button>
-        </form>
-        <a href="{% url 'create_group_member' group_id %}">Create Group Members</a>
-        <script src="{% static 'js/checkbox.js' %}" type="text/javascript"></script>
+        <div class="noted-list">
+            <form id="create-member", method="post" action="{% url 'create_group_member' group_id %}">
+                <h3>Add member</h3>
+                Add members you are responsible for, e.g. your children. You can access their lists later under 
+                {% if user.check_multi_responsible %}
+                    <a href="{% url 'my_lists' %}">My lists</a>
+                {% else %}
+                    <a href="{% url 'wish_list' leader_id %}">My lists</a>
+                {% endif %}
+                <table id="create-member-table" class="list">
+                    <tr class="list-top">
+                        <td class="create-member-first-name">
+                            First Name
+                        </td>
+                        <td class="create-member-last-name">
+                            Last Name
+                        </td>
+                        <td class="create-member-actions">
+                        </td>
+                    </tr>
+                    <tr class="list-entry">
+                        {% csrf_token %}
+                        {{ create_form.email.as_hidden }}
+                        <td class="create-member-first-name">
+                            {{ create_form.first_name }}
+                        </td>
+                        <td class="create-member-last-name">
+                            {{ create_form.last_name }}
+                        </td>
+                        <td class="create-member-actions">
+                            <a href="#", onclick="document.getElementById('create-member').submit()">
+                                + Add
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div> 
     {% endif %}
 
-    
+    <hr>
+    <span class="option">
+        <a href="{% url 'my_groups' %}">&lt;&lt; Back</a>
+    </span>
 
 {% endblock content %}

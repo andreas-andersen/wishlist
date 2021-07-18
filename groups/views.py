@@ -1,10 +1,12 @@
-from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.urls.base import reverse_lazy
 from accounts.models import CustomUser
 from .models import CustomGroup
-from .forms import GroupMemberCreateForm
+from .forms import (
+    GroupMemberCreateForm,
+    GroupMemberInviteForm,
+)
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     UserPassesTestMixin,
@@ -34,6 +36,23 @@ class GroupCreateView(
     def test_func(self):
         return self.request.user.is_leader
 
+class GroupMemberInviteView(
+    LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    form_cloass = GroupMemberCreateForm
+    template_name = 'group/invite-member.html'
+
+    def get_success_url(self, pk):
+        return reverse('group_members', kwargs={'pk': pk})
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.is_self_responsible = True
+        self.object.responsible_by = self.object
+        self.object.save()
+        group = CustomGroup.objects.get(pk=self.kwargs['pk'])
+        group.user_set.add(self.object)
+        return HttpResponseRedirect(self.get_success_url(self.kwargs['pk']))
+
 class GroupMemberCreateView(
     LoginRequiredMixin, CreateView):
     form_class = GroupMemberCreateForm
@@ -43,21 +62,20 @@ class GroupMemberCreateView(
         return reverse('group_members', kwargs={'pk': pk})
 
     def form_valid(self, form):
-        form.instance.is_leader = False
         self.object = form.save()
-        if self.object.responsible_by == None:
-            self.object.responsible_by = self.object
+        self.object.is_self_responsible = False
+        self.object.responsible_by = self.request.user
         self.object.save()
         group = CustomGroup.objects.get(pk=self.kwargs['pk'])
         group.user_set.add(self.object)
         return HttpResponseRedirect(self.get_success_url(self.kwargs['pk']))
 
-    def get_form_kwargs(self):
-        kwargs = super(GroupMemberCreateView, self).get_form_kwargs()
-        group = CustomGroup.objects.get(id=self.kwargs['pk'])
-
-        kwargs['group'] = group
-        return kwargs
+    #def get_form_kwargs(self):
+     #   kwargs = super(GroupMemberCreateView, self).get_form_kwargs()
+      #  group = CustomGroup.objects.get(id=self.kwargs['pk'])
+#
+ #       kwargs['group'] = group
+  #      return kwargs
 
     def test_func(self):
         current_group = CustomGroup.objects.filter(pk=self.kwargs['pk'])
@@ -86,8 +104,10 @@ class GroupMembersListView(
         group = CustomGroup.objects.get(id=self.kwargs['pk'])
         data['group_id'] = group.id
         data['group_name'] = group.name
-        data['form'] = GroupMemberCreateForm(group=group)
+        data['invite_form'] = GroupMemberInviteForm()
+        data['create_form'] = GroupMemberCreateForm()
         data['leader'] = group.leader == self.request.user
+        data['leader_id'] = self.request.user.id
         return data
 
     def test_func(self):

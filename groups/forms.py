@@ -50,17 +50,35 @@ class CustomGroupAdminForm(forms.ModelForm):
 
 
 class GroupMemberCreateForm(forms.ModelForm):
-
-    is_self_responsible = forms.BooleanField(
-        required=False
-    )
     
     class Meta(UserCreationForm):
         model = CustomUser
-        fields = ['email', 'first_name', 'last_name', 'is_self_responsible', 'responsible_by']
+        fields = ['email', 'first_name', 'last_name']
 
     def __init__(self, *args, **kwargs):
         self.group = kwargs.pop('group', None)
         super(GroupMemberCreateForm, self).__init__(*args, **kwargs)
-        if self.group:
+        self.fields['email'].initial = str(CustomUser.objects.latest('id').pk + 1) + '@not-an-address.com'
+        """ if self.group:
             self.fields['responsible_by'].queryset = self.group.user_set.all().filter(is_self_responsible=True)
+            self.fields['responsible_by'].disabled = True
+            self.fields['email'].initial = str(CustomUser.objects.latest('id').pk + 1) + '@not-an-address.com' """
+
+class GroupMemberInviteForm(forms.ModelForm):
+
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'placeholder': 'email@address.com'})
+    )
+    
+    class Meta(UserCreationForm):
+        model = CustomUser
+        fields = ['email']
+
+    def __init__(self, *args, **kwargs):
+        self.group = kwargs.pop('group', None)
+        super(GroupMemberInviteForm, self).__init__(*args, **kwargs)
+        #self.fields['email'].initial = str(CustomUser.objects.latest('id').pk + 1) + '@not-an-address.com'
+        """ if self.group:
+            self.fields['responsible_by'].queryset = self.group.user_set.all().filter(is_self_responsible=True)
+            self.fields['responsible_by'].disabled = True
+            self.fields['email'].initial = str(CustomUser.objects.latest('id').pk + 1) + '@not-an-address.com' """

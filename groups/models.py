@@ -37,5 +37,9 @@ class CustomGroup(Group):
         blank=True
     )
 
+    class Meta:
+        verbose_name = "Group"
+        verbose_name_plural = "Groups"
+
     def __str__(self):
         return self.name

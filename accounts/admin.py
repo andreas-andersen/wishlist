@@ -17,6 +17,7 @@ class CustomUserAdmin(UserAdmin):
         'assigned_to', 'responsible_by', 
         'is_leader', 'is_self_responsible',
     ]
+    list_filter = ['groups',]
 
     fieldsets = (
         (None, {'fields': ('email', 'password',)}),

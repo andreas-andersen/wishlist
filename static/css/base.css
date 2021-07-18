@@ -97,7 +97,7 @@ a {
     margin: 5em auto 0 auto;
 }
 
-.wish-list {
+.list {
     width: 100%;
     text-align: center;
     background-color: whitesmoke;
@@ -105,20 +105,103 @@ a {
     border-spacing: 0em 0.05em;
 }
 
-.wish-list-top {
+.noted-list {
+    width: 100%;
+    margin: 2em auto 0.25em auto;
+}
+
+.list-top {
     height: 3.5em;
+}
+
+.list-entry {
+    height: 4.5rem;
+    background-color: white;
+}
+
+.list-bottom {
+    height: 5em;
+}
+
+#create-member-table {
+    margin: 0
+}
+
+.create-member-first-name {
+    width: 50%;
+    text-align: center;
+    padding: 0.5em 1em;
+}
+
+.create-member-last-name {
+    width: 50%;
+    text-align: center;
+    padding: 0.5em 1em;
+}
+
+.create-member-actions {
+    min-width: 5em;
+    text-align: center;
+    padding: 0.5em;
+}
+
+#id_responsible_by {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    width: 100%;
+}
+
+.groups-list-name, .groups-list-leader {
+    width: 40%;
+    text-align: left;
+    padding: 0.5em 2em;
+}
+
+.groups-list-deadline {
+    width: 20%;
+    text-align: center;
+    padding: 0.5em 2em;
+}
+
+.groups-list-create, .members-invite,
+.groups-list-email {
+    text-align: left;
+    padding: 0.5em 2em;
+}
+
+.groups-list-invite {
+    text-align:left;
+    padding: 0.5em 2em;
+}
+
+.members-list-email {
+    width: 25%;
+    text-align: left;
+    padding: 0.5em 2em;
+}
+
+.members-list-name {
+    width: 35%;
+    text-align: center;
+    padding: 0.5em 2em;
+}
+
+.wish-list-submitted, .members-list-actions {
+    width: 15%;
+    text-align: center;
+    padding: 0.5em;
 }
 
 .wish-list-items {
     width: 20%;
     text-align: left;
-    padding: 0.5em 2em;
+    padding: 0.5em 1em;
 }
 
 .wish-list-details {
     width: 50%;
     text-align: left;
-    padding: 0.5em 2em;
+    padding: 0.5em 1em;
 }
 
 .wish-list-priority, .wish-list-actions {
@@ -127,12 +210,7 @@ a {
     padding: 0.5em;
 }
 
-.wish-entry {
-    height: 4.5rem;
-    background-color: white;
-}
-
-.item-title {
+.list-item-title {
     font-weight: bold;
 }
 
@@ -141,23 +219,23 @@ a {
     margin: 0 0 0 0;
 }
 
-#id_title, #id_details {
-    width: 100%;
-}
-
-#id_priority {
+#id_priority{
     font-family: 'Open Sans', sans-serif;
     font-weight: 300;
 }
 
-input[type="text"] {
+input[type="text"], input[type="email"] {
     height: 2em;
     border-radius: 1em;
     border: 0.1em solid gray;
-    padding: 0.05em 0.8em
+    padding: 0.05em 0.8em;
+    width: 100%;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
-input[type=text]:focus {
+input[type=text]:focus, input[type="email"] {
     outline: 0;
     border: 0.15em solid black;
 }

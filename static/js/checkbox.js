@@ -10,3 +10,7 @@ checkbox.addEventListener('change', function() {
         responsible_by.disabled = false;
     }
 });
+
+window.onload = function() {
+    responsible_by.disabled = true;
+};
