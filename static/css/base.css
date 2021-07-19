@@ -59,10 +59,10 @@ body {
 }
 
 .navbar {
-    height: 2.25rem;
+    height: 2.25em;
     display: flex;
     flex-direction: row;
-    justify-content: space-start;
+    justify-content: start;
     align-items: center;
     background-color: red;
     padding: 0.5em;
@@ -79,13 +79,32 @@ body {
 }
 
 .main {
-    margin: 1em auto 0 auto;
+    margin: 0 auto 0 auto;
+
+}
+
+.back {
+    height: 1.5em;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    background-color: aliceblue;
+    padding: 0.5em;
 }
 
 h1 {
     font-size: 3em;
     font-weight: 100;
     text-decoration: none;
+}
+
+h2 {
+    margin: 1em 1em 0.5em 1em;
+}
+
+h3 {
+    margin: 1em 1em 0.5em 1em;
 }
 
 a {
@@ -101,13 +120,13 @@ a {
     width: 100%;
     text-align: center;
     background-color: whitesmoke;
-    margin: 2em auto 0.25em auto;
+    margin: 0.25em auto 1em auto;
     border-spacing: 0em 0.05em;
 }
 
 .noted-list {
     width: 100%;
-    margin: 2em auto 0.25em auto;
+    margin: 4em auto 0.25em auto;
 }
 
 .list-top {
@@ -123,20 +142,22 @@ a {
     height: 5em;
 }
 
+.list-title {
+    height: 1.5em;
+    text-align: center;
+    font-weight: bold;
+    background-color: ghostwhite;
+}
+
 #create-member-table {
     margin: 0
 }
 
-.create-member-first-name {
-    width: 50%;
-    text-align: center;
-    padding: 0.5em 1em;
-}
-
+.create-member-first-name, 
 .create-member-last-name {
     width: 50%;
     text-align: center;
-    padding: 0.5em 1em;
+    padding: 0.5em 2em;
 }
 
 .create-member-actions {
@@ -163,14 +184,27 @@ a {
     padding: 0.5em 2em;
 }
 
-.groups-list-create, .members-invite,
-.groups-list-email {
+.groups-list-create {
     text-align: left;
     padding: 0.5em 2em;
 }
 
-.groups-list-invite {
-    text-align:left;
+.members-list-invite-email {
+    width: 35%;
+    text-align: left;
+    padding: 0.5em 2em;
+}
+
+.members-list-invite-invite {
+    width: 20%;
+    text-align: center;
+    padding: 0.5em 2em;
+}
+
+.members-list-invite-errors {
+    width: 35%;
+    text-align: center;
+    font-size: 0.8em;
     padding: 0.5em 2em;
 }
 
@@ -186,9 +220,22 @@ a {
     padding: 0.5em 2em;
 }
 
-.wish-list-submitted, .members-list-actions {
+.members-list-wish-submitted, 
+.members-list-actions {
     width: 15%;
     text-align: center;
+    padding: 0.5em;
+}
+
+.members-list-invited-email {
+    width: 85%;
+    text-align: left;
+    padding: 0.5em 2em;
+}
+
+.members-list-invited-action {
+    width: 15%;
+    text-align:center;
     padding: 0.5em;
 }
 
@@ -235,12 +282,8 @@ input[type="text"], input[type="email"] {
     box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
-input[type=text]:focus, input[type="email"] {
+input[type=text]:focus, input[type="email"]:focus {
     outline: 0;
     border: 0.15em solid black;
-}
-
-.option {
-    margin: 0 0.5em 0 0;
 }
 

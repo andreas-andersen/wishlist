@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h3>My lists</h3>
+
+    <div class="back">
+        <a href="{% url 'home' %}">&lt;&lt; Back</a>
+    </div>
+
+    <h2>My received lists</h2>
+
     {% for user in object_list %}
         <p>{{ user.username }}</p>
     {% empty %}
         <p>No wish lists received yet</p>
     {% endfor %}
-
-    <hr>
-    <span class="option">
-        <a href="{% url 'home' %}">&lt;&lt; Back</a>
-    </span>
 
 {% endblock content %}

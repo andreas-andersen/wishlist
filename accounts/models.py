@@ -80,9 +80,9 @@ class CustomUser(AbstractUser):
     is_self_responsible = models.BooleanField(
         default=True
     )
-    #has_submitted = models.BooleanField(
-     #   default=False
-    #)
+    has_submitted = models.BooleanField(
+        default=False
+    )
     def get_gravatar(self):
         md5 = hashlib.md5(self.email.encode())
         digest = md5.hexdigest()

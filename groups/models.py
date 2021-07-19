@@ -3,6 +3,11 @@ from accounts.models import CustomUser
 from django.contrib.auth.models import Group
 
 class CustomGroup(Group):
+    invited_users = models.ManyToManyField(
+        CustomUser,
+        blank=True,
+        related_name='invited_users',
+    )
     leader = models.ForeignKey(
         CustomUser,
         null=True,

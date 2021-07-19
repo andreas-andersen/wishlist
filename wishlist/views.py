@@ -1,8 +1,13 @@
+from django.http.response import HttpResponseForbidden
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from pages.views import get_name_or_email, get_possessive_ending
 from .models import Wish
 from .forms import WishCreateForm
 from accounts.models import CustomUser
+from django.contrib.auth.decorators import (
+    login_required,
+)
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     UserPassesTestMixin,
@@ -14,7 +19,6 @@ from django.views.generic import (
 from django.views.generic.edit import (
     CreateView,
     UpdateView, 
-    DeleteView,
 )
         
 
@@ -54,13 +58,16 @@ class WishUpdateView(
         responsible_author = wish_author.responsible_by
         return responsible_author == self.request.user
 
-class WishDeleteView(LoginRequiredMixin, DeleteView):
-    model = Wish
-    context_object_name = 'wish'
-    template_name = 'wish/delete.html'
-
-    def get_success_url(self):
-        return reverse('wish_list', kwargs={'pk': self.get_object().author.pk})
+@login_required
+def delete_wish(request, wish_id):
+    current_wish = Wish.objects.get(id=wish_id)
+    owner = current_wish.author
+    responsible_user = owner.responsible_by
+    if request.user != responsible_user:
+        return HttpResponseForbidden()
+    else:
+        Wish.objects.get(id=wish_id).delete()
+        return redirect('wish_list', owner.id)
 
 class WishListView(LoginRequiredMixin, ListView):
     model = Wish

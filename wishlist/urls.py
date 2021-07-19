@@ -4,7 +4,7 @@ from .views import (
     WishDetailView,
     WishCreateView, 
     WishUpdateView,
-    WishDeleteView,
+    delete_wish,
 )
 
 urlpatterns = [
@@ -14,6 +14,6 @@ urlpatterns = [
         WishUpdateView.as_view(), name='wish_update'),
     path('wishlist/<int:author_id>/new/', 
         WishCreateView.as_view(), name='wish_new'),
-    path('wish/<int:pk>/delete/',
-        WishDeleteView.as_view(), name='wish_delete'),
+    path('wish/<int:wish_id>/delete/',
+        delete_wish, name='delete_wish'),
 ]
