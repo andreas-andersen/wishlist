@@ -24,7 +24,7 @@
             </td>
             {% if leader %}
                 <td class="members-list-wish-submitted">
-                    Submitted List
+                    List Submitted
                 </td>
                 <td class="members-list-actions">
                 </td>
@@ -45,23 +45,24 @@
                 <td class="members-list-name">
                     {{ user.first_name }} {{ user.last_name }}
                 </td>
-                {% if leader %}
-                    <td class="members-list-wish-submitted">
+                <td class="members-list-wish-submitted">
+                    {% if leader %}
                         {% if user.has_submitted %} Yes {% else %} No {% endif %}
-                    </td>
-                    <td class="members-list-wish-actions">
-                        {% if leader_id != user.id %}
-                            <span>
-                                <a href="">Edit</a> | 
-                                <a href="{% url 'remove_group_member' group_id=group_id user_id=user.id %}"> 
+                    {% endif %}
+                </td>
+                <td class="members-list-wish-actions">
+                    {% if user.id != user.id or user.responsible_by == current_user or leader %}
+                        <span>
+                            {% if current_user.id == user.id %}
+                                Group Leader
+                            {% else %}
+                                <a href="{% url 'remove_group_member' group_id user.id %}"> 
                                     - Remove
                                 </a>
-                            </span>
-                        {% else %}
-                            Group Leader
-                        {% endif %}
-                    </td>
-                {% endif %}
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                </td>
             </tr> 
         {% empty %}
             <tr class="list-bottom">
@@ -75,7 +76,7 @@
     {% if leader %}
         <table class="list">
             <tr class="list-bottom">
-                <form id="invite-user", method="post" action="{% url 'group_members' group_id %}">
+                <form id="invite-user", method="post" action="{% url 'invite_group_member' group_id current_user.id %}">
                     {% csrf_token %}
                     <td class="members-list-invite-email">
                         {{ invite_form.email }}
@@ -86,7 +87,13 @@
                         </a>
                     </td>
                     <td class="members-list-invite-errors">
-                        {{ invite_form.email.errors.as_text }}
+                        {% if messages %}
+                            {% if 'invite' in message.tags %}
+                                {% for message in messages %}
+                                    <span>{{ message }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        {% endif %}
                     </td>
                 </form>
             </tr>
@@ -108,7 +115,7 @@
                         {{ user.email }}
                     </td>
                     <td class="members-list-invited-action">
-                        <a href="{% url 'uninvite_user' group_id=group_id user_id=user.id %}">
+                        <a href="{% url 'uninvite_user' group_id user.id %}">
                             - Uninvite
                         </a>
                     </td>
@@ -117,28 +124,18 @@
         </table>
     {% endif %}
 
-    {% if leader %}
+    {% if current_user.is_self_responsible %}
         <div class="noted-list">
             <h3>Add member</h3>
             Add members you are responsible for, e.g. your children. You can access their lists later under 
             {% if user.check_multi_responsible %}
                 <a href="{% url 'my_lists' %}">My lists</a>
             {% else %}
-                <a href="{% url 'wish_list' leader_id %}">My lists</a>
+                <a href="{% url 'wish_list' current_user.id %}">My lists</a>
             {% endif %}
             <table id="create-member-table" class="list">
-                <tr class="list-top">
-                    <td class="create-member-first-name">
-                        First Name
-                    </td>
-                    <td class="create-member-last-name">
-                        Last Name
-                    </td>
-                    <td class="create-member-actions">
-                    </td>
-                </tr>
-                <tr class="list-entry">
-                    <form id="create-member", method="post" action="{% url 'create_group_member' group_id %}">
+                <tr class="list-bottom">
+                    <form id="create-member", method="post" action="{% url 'create_group_member' group_id current_user.id %}">
                         {% csrf_token %}
                         {{ create_form.email.as_hidden }}
                         <td class="create-member-first-name">

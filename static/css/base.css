@@ -155,13 +155,13 @@ a {
 
 .create-member-first-name, 
 .create-member-last-name {
-    width: 50%;
+    width: 42.5%;
     text-align: center;
     padding: 0.5em 2em;
 }
 
 .create-member-actions {
-    min-width: 5em;
+    width: 15%;
     text-align: center;
     padding: 0.5em;
 }

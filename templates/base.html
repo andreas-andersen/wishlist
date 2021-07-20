@@ -47,11 +47,9 @@
                     <div class="navbar-item">
                         <a href="{% url 'received_lists' %}">+ Received lists</a>
                     </div>
-                        {% if user.is_leader %}
-                            <div class="navbar-item">
-                                <a href="{% url 'my_groups' %}">+ My Groups</a>
-                            </div>
-                        {% endif %}
+                        <div class="navbar-item">
+                            <a href="{% url 'my_groups' %}">+ My Groups</a>
+                        </div>
                 {% endif %}
             </div>
         </div>

@@ -47,7 +47,6 @@ class CustomUser(AbstractUser):
     )
     USERNAME_FIELD='email'
     REQUIRED_FIELDS=[]
-
     objects = CustomUserManager()
 
     first_name = models.CharField(

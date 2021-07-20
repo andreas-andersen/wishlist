@@ -60,41 +60,19 @@ class CustomGroupAdminForm(forms.ModelForm):
         exclude = []
 
 
-class GroupMemberCreateForm(forms.ModelForm):
-    
-    class Meta(UserCreationForm):
-        model = CustomUser
-        fields = ['email', 'first_name', 'last_name']
-
-    def __init__(self, *args, **kwargs):
-        super(GroupMemberCreateForm, self).__init__(*args, **kwargs)
-        self.fields['email'].initial = str(CustomUser.objects.latest('id').pk + 1) + '@not-an-address.com'
-
-class GroupMemberInviteForm(forms.ModelForm):
-
-    email = forms.EmailField(
-        widget=forms.EmailInput(attrs={'placeholder': 'email@address.com'})
+class GroupMemberCreateForm(forms.Form):
+    first_name = forms.CharField(
+        max_length=40,
+        widget=forms.TextInput(attrs={'placeholder': 'First Name'})
+    )
+    last_name = forms.CharField(
+        max_length=40,
+        widget=forms.TextInput(attrs={'placeholder': 'Last Name'})
     )
 
-    def __init__(self, *args, **kwargs):
-        self.group_id = kwargs.pop('group_id', None)
-        super(GroupMemberInviteForm, self).__init__(*args, **kwargs)
 
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        if CustomUser.objects.filter(email=email).exists():
-            existing_user = CustomUser.objects.get(email=email)
-            current_group = CustomGroup.objects.get(id=self.group_id)
-            if existing_user not in current_group.user_set.all():
-                if existing_user not in current_group.invited_users.all():
-                    current_group.invited_users.add(existing_user)
-                    raise ValidationError(f'User {email} already exists, invitation sent.')
-                else:
-                    raise ValidationError(f'User {email} already invited')
-            else:
-                raise ValidationError(f'User {email} is already a member of the group')
-        return email
-    
-    class Meta(UserCreationForm):
-        model = CustomUser
-        fields = ['email']
+class GroupMemberInviteForm(forms.Form):
+    email = forms.EmailField(
+        max_length=50,
+        widget=forms.EmailInput(attrs={'placeholder': 'email@address.com'})
+    )
