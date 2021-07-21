@@ -20,7 +20,8 @@ class Wish(models.Model):
     priority = models.CharField(
         max_length=2,
         choices=priority_choices,
-        default=HIGH_PRIORITY
+        default=HIGH_PRIORITY,
+        blank=True
     )
     details = models.TextField(blank=True)
 

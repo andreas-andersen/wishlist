@@ -11,13 +11,21 @@ from django.views.generic import (
     ListView, 
     CreateView,
 )
-from .forms import UserActivationForm
+from django.contrib.auth.views import LoginView
+from .forms import (
+    CustomUserActivationForm,
+    CustomUserLoginForm,
+)
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'registration/signup.html'
 
+class CustomUserLoginView(LoginView):
+    authentication_form = CustomUserLoginForm
+    success_url = reverse_lazy('home')
+    template_name = 'registration/login.html'
 
 class MyWishListsView(LoginRequiredMixin, ListView):
     model = CustomUser
@@ -42,7 +50,7 @@ def complete_user_activation(request, user_id):
 
     if user_id == request.user.id:
         if request.method == 'POST':
-            form = UserActivationForm(request.POST)
+            form = CustomUserActivationForm(request.POST)
 
             if form.is_valid():
                 current_user.first_name = form.cleaned_data['first_name']
@@ -52,7 +60,7 @@ def complete_user_activation(request, user_id):
                 return redirect('home')
 
         else: 
-            form = UserActivationForm()
+            form = CustomUserActivationForm()
 
         return render(request, 'registration/complete_activation.html', {'form': form})
 

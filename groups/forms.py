@@ -63,16 +63,25 @@ class CustomGroupAdminForm(forms.ModelForm):
 class GroupMemberCreateForm(forms.Form):
     first_name = forms.CharField(
         max_length=40,
-        widget=forms.TextInput(attrs={'placeholder': 'First Name'})
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'First Name',
+                'class': 'in-page-input'})
     )
     last_name = forms.CharField(
         max_length=40,
-        widget=forms.TextInput(attrs={'placeholder': 'Last Name'})
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'Last Name',
+                'class': 'in-page-input'})
     )
 
 
 class GroupMemberInviteForm(forms.Form):
     email = forms.EmailField(
         max_length=50,
-        widget=forms.EmailInput(attrs={'placeholder': 'email@address.com'})
+        widget=forms.EmailInput(
+            attrs={
+                'placeholder': 'email@address.com',
+                'class': 'in-page-input'})
     )

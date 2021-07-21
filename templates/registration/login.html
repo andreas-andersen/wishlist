@@ -1,9 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h3>Log In</h3>
-    <form method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Log In</button>
-    </form>
+    <div class="back">
+        <a href="{% url 'home' %}">&lt;&lt; Back</a>
+    </div>
+
+    <div class="form-page">
+        <h3>Log In</h3>
+        <form class="login-form" method="post">{% csrf_token %}
+            <div>{{ form.username }}</div>
+            <div>{{ form.password }}</div>
+            <div><button id="login-submit" type="submit">Log In</button></div>
+            <div class="form-page-errors">
+                 {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </form>
+    </div>
 {% endblock content %}
