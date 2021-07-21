@@ -69,9 +69,9 @@ class GroupMembersListView(
     def get_context_data(self, **kwargs):
         data = super(GroupMembersListView, self).get_context_data(**kwargs)
         group = CustomGroup.objects.get(id=self.kwargs['pk'])
-        data['group_id'] = group.id
-        data['group_name'] = group.name
         data['leader'] = group.leader == self.request.user
+        data['invitation_empty'] = len(group.invited_users.all())
+        data['current_group'] = group
         data['current_user'] = self.request.user
         data['invited_users'] = group.invited_users.all()
         data['invite_form'] = GroupMemberInviteForm()

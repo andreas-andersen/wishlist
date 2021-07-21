@@ -86,8 +86,9 @@ class CustomUser(AbstractUser):
         md5 = hashlib.md5(self.email.encode())
         digest = md5.hexdigest()
         SIZE = 30
+        DEFAULT = 'identicon'
 
-        return f'http://www.gravatar.com/avatar/{digest}?s={SIZE}'
+        return f'http://www.gravatar.com/avatar/{digest}?s={SIZE}&d={DEFAULT}'
 
     def check_multi_responsible(self):
         responsibilities = CustomUser.objects.filter(responsible_by=self.pk)

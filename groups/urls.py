@@ -27,6 +27,4 @@ urlpatterns = [
         uninvite_user_from_group, name='uninvite_user'),
     path('<uidb64>/<token>/accept_invitation',
         accept_invitation_view, name='accept_invitation'),
-    #url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-    #    accept_invitation_view, name='accept_invitation'),
 ]

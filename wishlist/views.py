@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from pages.views import get_name_or_email, get_possessive_ending
 from .models import Wish
-from .forms import WishCreateForm
+from .forms import WishCreateForm, WishUpdateForm
 from accounts.models import CustomUser
 from django.contrib.auth.decorators import (
     login_required,
@@ -21,7 +21,6 @@ from django.views.generic.edit import (
     UpdateView, 
 )
         
-
 class WishDetailView(LoginRequiredMixin, DetailView):
     model = Wish
     context_object_name = 'wish'
@@ -49,14 +48,22 @@ class WishCreateView(
 class WishUpdateView(
     LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Wish
+    form_class = WishUpdateForm
     context_object_name = 'wish'
     template_name = 'wish/update.html'
-    fields = ['title', 'priority', 'details']
+
+    def get_success_url(self):
+        return reverse('wish_list', kwargs={'pk': self.kwargs['author_id']})
 
     def test_func(self):
         wish_author = self.get_object().author
         responsible_author = wish_author.responsible_by
         return responsible_author == self.request.user
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['author_id'] = self.kwargs['author_id']
+        return data
 
 @login_required
 def delete_wish(request, wish_id):

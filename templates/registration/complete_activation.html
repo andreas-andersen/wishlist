@@ -1,9 +1,38 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h3>Sign Up</h3>
-    <form method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Update</button>
-    </form>
+    <div class="back">
+    </div>
+
+    <div class="form-page">
+        <h3>Activate Account</h3>
+        <form class="form-page-form" method="post">{% csrf_token %}
+            <div>
+                <span>{{ form.first_name }}</span>
+                {% for error in form.first_name.errors %}<span class="form-field-error">{{ error }}<br></span>{% endfor %}
+            </div>
+            <div>
+                <span>{{ form.last_name }}</span>
+                {% for error in form.last_name.errors %}<span class="form-field-error">{{ error }}<br>{% endfor %}</span>
+            </div>
+            <div class="form-double-space">
+                <span class="form-page-password">
+                    <span>{{ form.password1 }}</span>
+                </span>
+                <span class="form-page-password">
+                    {{ form.password2 }}
+                </span>
+            </div>
+            <div class="form-double-space-error">
+                {% for error in form.password2.errors %}<span class="form-field-error">{{ error }}<br></span>{% endfor %}
+            </div>
+            <div><button class="form-page-submit" type="submit">Activate</button></div>
+            <div class="form-page-errors">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+
 {% endblock content %}

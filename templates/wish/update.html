@@ -1,11 +1,38 @@
-<!-- templates/wish_update.html -->
-
 {% extends 'base.html' %}
 
 {% block content %}
-    <h3>Update wish</h3>
-    <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Update">
-    </form>
+    <div class="back">
+        <a href="{% url 'wish_list' author_id %}">&lt;&lt; Back</a>
+    </div>
+
+    <div class="form-page">
+        <h3>Edit Wish</h3>
+        <form class="form-page-form" method="post">{% csrf_token %}
+            <div>
+                <span>{{ form.title }}</span>
+                {% for error in form.title.errors %}<span class="form-field-error">{{ error }}<br></span>{% endfor %}
+            </div>
+            <div>
+                <span class="form-page-descriptor">Add an optional link to an example product:</span>
+                <span>{{ form.link }}</span>
+                {% for error in form.link.errors %}<span class="form-field-error">{{ error }}<br></span>{% endfor %}
+            </div>
+            <div>
+                {{ form.details }}
+                {% for error in form.details.errors %}<span class="form-field-error">{{ error }}<br>{% endfor %}</span>
+            </div>
+            <div class="form-selector-space">
+                <span class="form-page-descriptor">Priority:</span>
+                <span>{{ form.priority }}</span>
+                {% for error in form.priority.errors %}<span class="form-field-error">{{ error }}<br></span>{% endfor %}
+            </div>
+            <div><button class="form-page-submit" type="submit">Submit</button></div>
+            <div class="form-page-errors">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+
 {% endblock content %}

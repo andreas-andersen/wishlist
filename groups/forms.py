@@ -10,17 +10,14 @@ class CustomGroupAdminForm(forms.ModelForm):
     users = forms.ModelMultipleChoiceField(
         queryset=CustomUser.objects.all(), 
         required=False,
-        widget=FilteredSelectMultiple('users', False)
-    )
+        widget=FilteredSelectMultiple('users', False))
     invited_users = forms.ModelMultipleChoiceField(
         queryset=CustomUser.objects.all(), 
         required=False,
-        widget=FilteredSelectMultiple('invited_users', False)
-    )
+        widget=FilteredSelectMultiple('invited_users', False))
     leader = forms.ModelChoiceField(
         queryset=CustomUser.objects.all(),
-        to_field_name='email'
-    )
+        to_field_name='email')
     DKK = 'DKK'
     NOK = 'NOK'
     JPY = '¥'
@@ -33,8 +30,7 @@ class CustomGroupAdminForm(forms.ModelForm):
     ]
     currency = forms.ChoiceField(
         choices=currency_choices,
-        required=False
-    )
+        required=False)
 
     def __init__(self, *args, **kwargs):
         super(CustomGroupAdminForm, self).__init__(*args, **kwargs)
@@ -43,8 +39,7 @@ class CustomGroupAdminForm(forms.ModelForm):
             self.fields['invited_users'].initial = self.instance.invited_users.all()
             self.initial['leader'] = self.instance.leader
             self.fields['invited_users'].queryset = (
-                CustomUser.objects.all().difference(self.instance.user_set.all())
-            )
+                CustomUser.objects.all().difference(self.instance.user_set.all()))
 
     def save_m2m(self):
         self.instance.user_set.set(self.cleaned_data['users'])
@@ -83,5 +78,4 @@ class GroupMemberInviteForm(forms.Form):
         widget=forms.EmailInput(
             attrs={
                 'placeholder': 'email@address.com',
-                'class': 'in-page-input'})
-    )
+                'class': 'in-page-input'}))

@@ -21,14 +21,14 @@
                             </span>
                         </span>
                         <span class="login-item">
-                            <a href="{% url 'logout' %}">+ Log Out</a>
+                            <a href="{% url 'logout' %}">- Log Out</a>
                         </span>
                     {% else %}
                         <span class="login-item">
                             <a href="{% url 'login_user' %}">+ Log In</a>
                         </span>
                         <span class="login-item">
-                            <a href="{% url 'signup' %}">+ Sign Up</a>
+                            <a href="{% url 'signup_user' %}">+ Sign Up</a>
                         </spn>
                     {% endif %}
                 </span>

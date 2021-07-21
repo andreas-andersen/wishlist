@@ -7,7 +7,7 @@
         <a href="{% url 'my_groups' %}">&lt;&lt; Back</a>
     </div>
 
-    <h2>{{ group_name }}</h2>
+    <h2>{{ current_group.name }}</h2>
 
     <div class="list-title">
         Group members
@@ -56,7 +56,7 @@
                             {% if current_user.id == user.id %}
                                 Group Leader
                             {% else %}
-                                <a href="{% url 'remove_group_member' group_id user.id %}"> 
+                                <a href="{% url 'remove_group_member' current_group.id user.id %}"> 
                                     - Remove
                                 </a>
                             {% endif %}
@@ -76,7 +76,7 @@
     {% if leader %}
         <table class="list">
             <tr class="list-bottom">
-                <form id="invite-user", method="post" action="{% url 'invite_group_member' group_id current_user.id %}">
+                <form id="invite-user", method="post" action="{% url 'invite_group_member' current_group.id current_user.id %}">
                     {% csrf_token %}
                     <td class="members-list-invite-email">
                         {{ invite_form.email }}
@@ -98,30 +98,33 @@
                 </form>
             </tr>
         </table>
-        <div class="list-title">
-            Invited users
-        </div>
-        <table class="list">
-            <tr class="list-top">
-                <td class="members-list-invited-email">
-                    Email
-                </td>
-                <td class="members-list-invited-action">
-                </td>
-            </tr>
-            {% for user in invited_users %}
-                <tr class="list-entry">
+        {% if invitation_empty %}
+            <div class="list-title">
+                Invited users
+            </div>
+            <table class="list">
+                <tr class="list-top">
                     <td class="members-list-invited-email">
-                        {{ user.email }}
+                        Email
                     </td>
                     <td class="members-list-invited-action">
-                        <a href="{% url 'uninvite_user' group_id user.id %}">
-                            - Uninvite
-                        </a>
                     </td>
                 </tr>
-            {% endfor %}
-        </table>
+                {% for user in invited_users %}
+                    <tr class="list-entry">
+                        <td class="members-list-invited-email">
+                            {{ user.email }}
+                        </td>
+                        <td class="members-list-invited-action">
+                            <a href="{% url 'uninvite_user' current_group.id user.id %}">
+                                - Uninvite
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+        {% endif %}
     {% endif %}
 
     {% if current_user.is_self_responsible %}
@@ -135,7 +138,8 @@
             {% endif %}
             <table id="create-member-table" class="list">
                 <tr class="list-bottom">
-                    <form id="create-member", method="post" action="{% url 'create_group_member' group_id current_user.id %}">
+                    <form id="create-member", method="post" 
+                        action="{% url 'create_group_member' current_group.id current_user.id %}">
                         {% csrf_token %}
                         {{ create_form.email.as_hidden }}
                         <td class="create-member-first-name">

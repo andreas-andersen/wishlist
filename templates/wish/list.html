@@ -30,7 +30,7 @@
         {% for wish in object_list %}
             <tr class="list-entry">
                 <td class="wish-list-items">
-                    <a href="{% url 'wish_detail' wish.pk %}" class = "item-title">
+                    <a href="{% url 'update_wish' list_owner_id wish.id %}" class = "item-title">
                         {{ wish.title }}
                     </a>
                 </td>
@@ -42,8 +42,8 @@
                 </td>
                 <td class="wish-list-actions">
                     <span>
-                        <a href="">Edit</a> | 
-                        <a href="{% url 'delete_wish' wish_id=wish.pk %}">
+                        <a href="{% url 'update_wish' list_owner_id wish.id %}">Edit</a> | 
+                        <a href="{% url 'delete_wish' wish.id %}">
                             Delete
                         </a>
                     </span>

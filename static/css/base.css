@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
 
 body {
     font-family: 'Open Sans', sans-serif;
@@ -128,6 +128,13 @@ a {
     background-color: ghostwhite;
 }
 
+.user-details-page {
+    max-width: 60%;
+    min-width: 20em;
+    display: flex;
+    flex-direction: column;
+}
+
 .list {
     width: 100%;
     text-align: center;
@@ -161,11 +168,36 @@ a {
     background-color: ghostwhite;
 }
 
-.login-form {
+.form-page-form {
     width: 100%;
+    box-sizing: border-box;
     margin: 1em 0 0 0;
-    padding: 0 0 2em 0;
+    padding: 0 1em 2em 1em;
     text-align: center;
+}
+
+.form-double-space {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0.5em 0 0 0;
+}
+
+.form-selector-space{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0.5em 0 0 0;
+}
+
+.form-double-space-error {
+    align-items: left;
+}
+
+.form-page-descriptor {
+    font-size: 0.8em
 }
 
 input.form-page-input {
@@ -181,7 +213,36 @@ input.form-page-input {
     margin: 0.1em 0 0 0;
 }
 
-#login-submit {
+textarea.form-page-input {
+    height: 10em;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+    border-radius: 0.5em;
+    padding: 0.5em 0.5em;
+    margin: 0.1em 0 0 0;
+}
+
+select.form-page-input {
+    height: 2em;
+    font-family: 'Open Sans', sans-serif;
+    margin: 0.1em 0 0 2em;
+}
+
+.form-page-password {
+    display: inline-block;
+    flex-grow: 1;
+    width: 50%;
+}
+.form-page-password:first-child {
+    margin: 0 0.25em 0 0;
+}
+
+.form-field-error {
+    font-size: 0.8em;
+}
+
+.form-page-submit {
     width: 100%;
     height: 3em;
     font-family: 'Open Sans', sans-serif;
@@ -194,6 +255,8 @@ input.form-page-input {
     font-size: 0.8em;
     margin: 1.5em 0 0 0;
 }
+
+
 
 #create-member-table {
     margin: 0

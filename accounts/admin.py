@@ -11,13 +11,13 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    ordering = ('-email',)
+    ordering = ('-date_joined',)
     list_display = [
         'email', 'first_name', 'last_name', 
         'assigned_to', 'responsible_by', 
         'is_leader', 'is_self_responsible',
     ]
-    list_filter = ['groups',]
+    list_filter = ['is_active','groups',]
 
     fieldsets = (
         (None, {'fields': ('email', 'password',)}),

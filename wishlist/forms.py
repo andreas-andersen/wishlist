@@ -1,10 +1,9 @@
 from django import forms
-from django.forms import ModelForm
 from django.forms.widgets import TextInput
 from .models import Wish
 from accounts.models import CustomUser
 
-class WishCreateForm(ModelForm):
+class WishCreateForm(forms.ModelForm):
     title = forms.CharField(
         max_length=100,
         widget=forms.TextInput(
@@ -23,7 +22,6 @@ class WishCreateForm(ModelForm):
     priority = forms.ChoiceField(
         choices=priority_choices,
         required=False,
-        #default=HIGH_PRIORITY,
         widget=forms.Select(
             attrs={
                 'placeholder': 'Priority',
@@ -38,3 +36,51 @@ class WishCreateForm(ModelForm):
     class Meta:
         model = Wish
         fields = ['title', 'priority', 'details']
+
+class WishUpdateForm(forms.ModelForm):
+    title = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'Item name',
+                'class': 'form-page-input'}))
+    HIGH_PRIORITY = 'HI'
+    MEDIUM_PRIORITY = 'MD'
+    LOW_PRIORITY = 'LO'
+    priority_choices = [
+        ('', 'Priority'),
+        (HIGH_PRIORITY, "High"),
+        (MEDIUM_PRIORITY, "Medium"),
+        (LOW_PRIORITY, "Low"),
+    ]
+    priority = forms.ChoiceField(
+        choices=priority_choices,
+        required=False,
+        widget=forms.Select(
+            attrs={
+                'placeholder': 'Priority',
+                'class': 'form-page-input'}))
+    link = forms.URLField(
+        required=False,
+        widget=forms.URLInput(
+            attrs={
+                'placeholder': 'https://',
+                'class': 'form-page-input'
+            }))
+    details = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'placeholder': 'Details: e.g. color, size, brand, etc.',
+                'style': 'resize:none;',
+                'class': 'form-page-input'}))
+
+    class Meta:
+        model = Wish
+        fields = ['title', 'priority', 'link', 'details']
+
+    def __init__(self, *args, **kwargs):
+        super(WishUpdateForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.initial['title'] = self.instance.title
+            self.initial['priority'] = self.instance.priority
+            self.initial['details'] = self.instance.details
