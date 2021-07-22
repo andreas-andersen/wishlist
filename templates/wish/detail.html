@@ -5,13 +5,13 @@
 {% block content %}
 
     <div class="wish-detail">
-        <h2>{{ wish.title }}</h2>
+        <div class="page-title">{{ wish.title }}</div>
         <p>{{ wish.details }}</p>
         <p>Priority: {{ wish.get_priority_display }}</p>
         <hr>
         <p>
             <span class="option">
-                <a href="{% url 'wish_list' wish.author.pk %}">&lt;&lt; Back</a>
+                <a href="{% url 'wish_list' wish.author.pk %}"><i class="fi-rr-angle-double-left"></i></a>
             </span>
             <span class="option">
                 <a href="{% url 'wish_update' wish.pk %}">+ Update</a>

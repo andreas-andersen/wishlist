@@ -1,9 +1,10 @@
 from django import forms
-from django.db import models
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import (
     AuthenticationForm,
+    PasswordResetForm,
+    SetPasswordForm,
     UserCreationForm, 
     UserChangeForm,
 )
@@ -22,13 +23,33 @@ class CustomUserChangeForm(UserChangeForm):
         model = CustomUser
         fields = UserChangeForm.Meta.fields
 
+class CustomUserPasswordChangeForm(SetPasswordForm):
+
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                'placeholder': 'Enter new password',
+                'class': 'in-page-input',
+                'autofocus': 'autofocus'}))
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                'placeholder': 'Repeat password',
+                'class': 'in-page-input',
+                'autofocus': 'autofocus'}))
+
+    class Meta:
+        model= CustomUser
+        fields = ['new_password1', 'new_password2']
+
 class CustomUserSignupForm(UserCreationForm):
     email = forms.CharField(
         max_length=40,
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Email',
-                'class': 'form-page-input'}))
+                'class': 'form-page-input',
+                'autofocus': 'autofocus'}))
     first_name = forms.CharField(
         max_length=40,
         widget=forms.TextInput(
@@ -64,7 +85,8 @@ class CustomUserLoginForm(AuthenticationForm):
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Email',
-                'class': 'form-page-input'}))
+                'class': 'form-page-input',
+                'autofocus': 'autofocus'}))
     password = forms.CharField(
         max_length=40,
         widget=forms.PasswordInput(
@@ -86,7 +108,8 @@ class CustomUserActivationForm(forms.ModelForm):
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'First Name',
-                'class': 'form-page-input'}))
+                'class': 'form-page-input',
+                'autofocus': 'autofocus'}))
     last_name = forms.CharField(
         max_length=40,
         required=True,
@@ -125,19 +148,3 @@ class CustomUserActivationForm(forms.ModelForm):
 
         if password1 != password2:
             raise ValidationError('The two passwords do not match')
-    
-    """ def clean_password1(self):
-                password = self.cleaned_data.get('password1')
-                if password:
-                    try:
-                        validate_password(password, self.instance)
-                    except ValidationError as error:
-                        self.add_error('password1', error)
-                        
-    def clean_password2(self):
-        password = self.cleaned_data.get('password1')
-        if password:
-            try:
-                validate_password(password, self.instance)
-            except ValidationError as error:
-                self.add_error('password1', error) """

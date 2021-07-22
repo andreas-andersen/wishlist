@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="back">
-        <a href="{% url 'home' %}">&lt;&lt; Back</a>
-    </div>
-
     <div class="form-page">
         <h3>Sign Up</h3>
         <form class="form-page-form" method="post">{% csrf_token %}

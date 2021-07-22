@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="back">
+        <a href="{% url 'home' %}"><i class="fi-rr-angle-double-left"></i></a>
+    </div>
+
+    <div class="info-page">
+        <h3>Details for {{ user.email }} </h3>
+        <div class="info-page-reset-password">
+            <h4>Change password</h4>
+            <form class="info-page-form" method="post">{% csrf_token %}
+                <div class="info-page-reset-password-form">
+                    <div>{{ password_change_form.new_password1 }} {{ password_change_form.new_password1.errors }}</div>
+                    <div>{{ password_change_form.new_password2 }} {{ password_change_form.nwe_password2.errors }}</div>
+                    <div><button class="" type="submit">Submit</button></div>
+                    <div class="form-page-errors">
+                        {% if form.non_field_errors %}
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

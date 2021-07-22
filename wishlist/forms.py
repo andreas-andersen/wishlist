@@ -1,7 +1,5 @@
 from django import forms
-from django.forms.widgets import TextInput
 from .models import Wish
-from accounts.models import CustomUser
 
 class WishCreateForm(forms.ModelForm):
     title = forms.CharField(
@@ -9,7 +7,8 @@ class WishCreateForm(forms.ModelForm):
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Item name',
-                'class': 'in-page-input'}))
+                'class': 'in-page-input',
+                'autofocus': 'autofocus'}))
     HIGH_PRIORITY = 'HI'
     MEDIUM_PRIORITY = 'MD'
     LOW_PRIORITY = 'LO'
@@ -43,7 +42,8 @@ class WishUpdateForm(forms.ModelForm):
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Item name',
-                'class': 'form-page-input'}))
+                'class': 'form-page-input',
+                'autofocus': 'autofocus'}))
     HIGH_PRIORITY = 'HI'
     MEDIUM_PRIORITY = 'MD'
     LOW_PRIORITY = 'LO'

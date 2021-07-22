@@ -85,7 +85,7 @@ class CustomUser(AbstractUser):
     def get_gravatar(self):
         md5 = hashlib.md5(self.email.encode())
         digest = md5.hexdigest()
-        SIZE = 30
+        SIZE = 40
         DEFAULT = 'identicon'
 
         return f'http://www.gravatar.com/avatar/{digest}?s={SIZE}&d={DEFAULT}'

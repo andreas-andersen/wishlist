@@ -8,15 +8,17 @@ from django.contrib.auth.decorators import login_required
 from .models import CustomUser
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
+    UserPassesTestMixin,
 )
 from django.views.generic import (
     ListView, 
     CreateView,
 )
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
 from .forms import (
     CustomUserActivationForm,
     CustomUserLoginForm,
+    CustomUserPasswordChangeForm,
     CustomUserSignupForm,
 )
 
@@ -30,10 +32,33 @@ class CustomUserLoginView(LoginView):
     success_url = reverse_lazy('home')
     template_name = 'registration/login.html'
 
-class CustomUserDetailView(LoginRequiredMixin, DetailView):
+class CustomUserDetailsView(LoginRequiredMixin, DetailView):
     model = CustomUser
     context_object_name = 'user_details'
     template_name = 'user/details.html'
+
+    def get_context_data(self, **kwargs):
+        data = super(CustomUserDetailsView, self).get_context_data(**kwargs)
+        current_user = self.request.user
+        data['password_change_form'] = CustomUserPasswordChangeForm(current_user)
+        return data
+
+class CustomUserPasswordChangeView(
+        LoginRequiredMixin, 
+        UserPassesTestMixin,
+        PasswordChangeView,
+    ):
+    form_class = CustomUserPasswordChangeForm
+    template_name = 'registration/change_password.html'
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('home')
+
+    def test_func(self):
+        return self.request.user == CustomUser.objects.get(id=self.kwargs['user_id'])
 
 class MyWishListsView(LoginRequiredMixin, ListView):
     model = CustomUser
