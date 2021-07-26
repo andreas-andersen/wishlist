@@ -6,6 +6,8 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .models import CustomUser
+from groups.models import CustomGroup
+from wishlist.models import Wish
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     UserPassesTestMixin,
@@ -60,6 +62,19 @@ class CustomUserPasswordChangeView(
     def test_func(self):
         return self.request.user == CustomUser.objects.get(id=self.kwargs['user_id'])
 
+@login_required
+def my_wish_lists_view(request, user_id):
+    template_name = 'wish/my_lists.html'
+    current_user = CustomUser.objects.get(id=user_id)
+    current_groups = CustomGroup.objects.filter(user=user_id)
+    data = [
+        (group, 
+        ((user, len(Wish.objects.filter(author=user))) 
+            for user in group.user_set.all().filter(responsible_by=current_user)))
+        for group in current_groups
+    ]
+    return render(request, template_name, {'data': data})
+
 class MyWishListsView(LoginRequiredMixin, ListView):
     model = CustomUser
     context_object_name = 'my_lists'
@@ -100,3 +115,4 @@ def complete_user_activation(request, user_id):
 
     else:
         return HttpResponseForbidden() 
+

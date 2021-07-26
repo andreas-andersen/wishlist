@@ -4,13 +4,26 @@
     
     <div class="back">
         {% if user.check_multi_responsible %}
-            <a href="{% url 'my_lists' %}"><i class="fi-rr-angle-double-left"></i></a>
+            <a href="{% url 'my_lists' user.id %}"><i class="fi-rr-angle-double-left"></i></a>
         {% else %}
             <a href="{% url 'wish_list' user.id %}"><i class="fi-rr-angle-double-left"></i></a>
         {% endif %}
     </div>
     
-    <div class="page-title">{{ list_owner }} wish list</div>
+    <div class="page-title">
+        <div>{{ author_name }} wish list</div>
+        <div id="burger" class="burger" onclick="dropBurger()">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <div id="burger-menu-id" class="burger-menu">
+                <a href="{% url 'wish_detailed_new' author_id %}" class="burger-element">
+                    <i class="fi-rr-list dropdown-icon"></i>Add Wish
+                </a>
+            </div>
+        </div>
+    </div>
 
     <table class="list">
         <tr class="list-top">
@@ -30,7 +43,7 @@
         {% for wish in object_list %}
             <tr class="list-entry">
                 <td class="wish-list-items">
-                    <a href="{% url 'update_wish' list_owner_id wish.id %}" class = "item-title">
+                    <a href="{% url 'update_wish' author_id wish.id %}" class = "item-title">
                         {{ wish.title }}
                     </a>
                 </td>
@@ -42,7 +55,7 @@
                 </td>
                 <td class="wish-list-actions">
                     <span>
-                        <a href="{% url 'update_wish' list_owner_id wish.id %}">Edit</a> | 
+                        <a href="{% url 'update_wish' author_id wish.id %}">Edit</a> | 
                         <a href="{% url 'delete_wish' wish.id %}">
                             Delete
                         </a>
@@ -52,7 +65,7 @@
         {% endfor %}
 
         <tr class="list-bottom">
-            <form id="create-wish", method="post" action="{% url 'wish_new' list_owner_id %}">
+            <form id="create-wish", method="post" action="{% url 'wish_new' author_id %}">
                 {% csrf_token %}
                 <td class="wish-list-items">
                     {{ form.title }}
@@ -65,7 +78,7 @@
                 </td>
                 <td class="wish-list-actions">
                     <a href="#", onclick="document.getElementById('create-wish').submit()">
-                        + Add
+                        + Quick Add
                     </a>
                 </td>
             </form>

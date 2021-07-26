@@ -13,6 +13,7 @@ from accounts.models import CustomUser
 from accounts.tokens import invitation_token
 from .models import CustomGroup
 from .forms import (
+    GroupCreateForm,
     GroupMemberCreateForm,
     GroupMemberInviteForm,
 )
@@ -29,9 +30,9 @@ from django.views.generic import (
 class GroupCreateView(
     LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = CustomGroup
+    form_class = GroupCreateForm
     context_object_name = 'group'
-    template_name = 'registration/group.html'
-    fields = ['name']
+    template_name = 'group/create.html'
 
     def get_success_url(self, pk):
         return reverse('group_members', kwargs={'pk': pk})
@@ -45,6 +46,16 @@ class GroupCreateView(
 
     def test_func(self):
         return self.request.user.is_leader
+
+@login_required
+def delete_group(request, group_id):
+    current_group = CustomGroup.objects.get(id=group_id)
+    group_leader = current_group.leader
+    if request.user != group_leader:
+        return HttpResponseForbidden()
+    else:
+        current_group.delete()
+        return redirect('my_groups')
 
 class MyGroupsListView(LoginRequiredMixin, ListView,):
     model = CustomGroup
@@ -138,7 +149,7 @@ def group_member_invite_view(request, group_id, user_id):
                     invite_email.send()
                     messages.success(
                         request, f'User with {email} has been invited!',
-                        extra_tags='create')
+                        extra_tags='invite')
                     
                     return redirect('group_members', group_id)
             

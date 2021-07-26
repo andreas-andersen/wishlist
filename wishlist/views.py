@@ -3,7 +3,11 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from pages.views import get_name_or_email, get_possessive_ending
 from .models import Wish
-from .forms import WishCreateForm, WishUpdateForm
+from .forms import (
+    WishCreateForm, 
+    WishUpdateForm,
+    WishDetailedCreateForm,
+)
 from accounts.models import CustomUser
 from django.contrib.auth.decorators import (
     login_required,
@@ -27,10 +31,9 @@ class WishDetailView(LoginRequiredMixin, DetailView):
     template_name = 'wish/detail.html'
 
 class WishCreateView(
-    LoginRequiredMixin, UserPassesTestMixin, CreateView):
+        LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Wish
     context_object_name = 'wish'
-    template_name = 'wish/new.html'
     fields = ['title', 'priority', 'details']
 
     def form_valid(self, form):
@@ -44,6 +47,30 @@ class WishCreateView(
         wish_author = CustomUser.objects.get(id=self.kwargs['author_id'])
         responsible_author = wish_author.responsible_by
         return responsible_author == self.request.user
+
+class WishDetailedCreateView(
+        LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Wish
+    form_class = WishDetailedCreateForm
+    context_object_name = 'wish'
+    template_name = 'wish/new.html'
+
+    def form_valid(self, form):
+        form.instance.author = CustomUser.objects.get(id=self.kwargs['pk'])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('wish_list', kwargs={'pk': self.kwargs['pk']})
+
+    def test_func(self):
+        wish_author = self.get_object().author
+        responsible_author = wish_author.responsible_by
+        return responsible_author == self.request.user
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['author_id'] = self.kwargs['pk']
+        return data
 
 class WishUpdateView(
     LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -63,6 +90,7 @@ class WishUpdateView(
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         data['author_id'] = self.kwargs['author_id']
+        data['wish'] = Wish.objects.get(id=self.kwargs['pk'])
         return data
 
 @login_required
@@ -87,9 +115,9 @@ class WishListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        list_owner = CustomUser.objects.get(id=self.kwargs['pk'])
-        data['list_owner_id'] = list_owner.id
-        data['list_owner'] = get_possessive_ending(
-            get_name_or_email(list_owner))
+        author = CustomUser.objects.get(id=self.kwargs['pk'])
+        data['author_id'] = author.id
+        data['author_name'] = get_possessive_ending(
+            get_name_or_email(author))
         data['form'] = WishCreateForm()
         return data

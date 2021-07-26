@@ -7,11 +7,33 @@
         <a href="{% url 'my_groups' %}"><i class="fi-rr-angle-double-left"></i></a>
     </div>
 
-    <div class="page-title">{{ current_group.name }}</div>
-
+    <div class="page-title">
+        <div>{{ current_group.name }}</div>
+        <div id="burger" class="burger" onclick="dropBurger()">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <div id="burger-menu-id" class="burger-menu">
+                <a href="#invite" class="burger-element">
+                    <i class="fi-rr-paper-plane dropdown-icon"></i>Invite user
+                </a>
+                <a href="#add-member" class="burger-element">
+                    <i class="fi-rr-users dropdown-icon"></i>Add member
+                </a>
+                {% if leader%}
+                    <a href="#add-member" class="burger-element">
+                        <i class="fi-rr-shuffle dropdown-icon"></i>Shuffle / Assignment
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
     <div class="list-container">
-        <div class="list-title">
-            Group members
+        <div class="list-title plain-title">
+            <div>
+                Group members
+            </div>
         </div>
         <table class="list">
             <tr class="list-top">
@@ -46,9 +68,7 @@
                         {{ user.first_name }} {{ user.last_name }}
                     </td>
                     <td class="members-list-wish-submitted">
-                        {% if leader %}
-                            {% if user.has_submitted %} Yes {% else %} No {% endif %}
-                        {% endif %}
+                        {% if user.has_submitted %} Yes {% else %} No {% endif %}
                     </td>
                     <td class="members-list-wish-actions">
                         {% if user.id != user.id or user.responsible_by == current_user or leader %}
@@ -75,6 +95,7 @@
     </div>
 
     {% if leader %}
+        <a name="invite"></a>
         <table class="list">
             <tr class="list-bottom">
                 <form id="invite-user", method="post" action="{% url 'invite_group_member' current_group.id current_user.id %}">
@@ -89,11 +110,11 @@
                     </td>
                     <td class="members-list-invite-errors">
                         {% if messages %}
-                            {% if 'invite' in message.tags %}
-                                {% for message in messages %}
+                            {% for message in messages %}
+                                {% if 'invite' in message.tags %}
                                     <span>{{ message }}</span>
-                                {% endfor %}
-                            {% endif %}
+                                {% endif %}
+                            {% endfor %}
                         {% endif %}
                     </td>
                 </form>
@@ -101,7 +122,7 @@
         </table>
         {% if invitation_empty %}
             <div class="list-container-2">
-                <div class="list-title">
+                <div class="list-title plain-title">
                     Invited users
                 </div>
                 <table class="list">
@@ -138,9 +159,12 @@
     <hr class="list-page-divider">
 
     {% if current_user.is_self_responsible %}
+        <a name="add-member"></a>
         <div class="noted-list">
-            <div class="list-title">
-                Add member
+            <div class="list-title plain-title">
+                <div>
+                    Add member
+                </div>
             </div>
             <table id="create-member-table" class="list">
                 <tr class="list-bottom">

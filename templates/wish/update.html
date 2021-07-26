@@ -5,28 +5,35 @@
         <a href="{% url 'wish_list' author_id %}"><i class="fi-rr-angle-double-left"></i></a>
     </div>
 
-    <div class="form-page">
-        <h3>Edit Wish</h3>
+    <div class="form-page-large">
+        <span class="form-page-title">Add wish</span>
         <form class="form-page-form" method="post">{% csrf_token %}
-            <div>
-                <span>{{ form.title }}</span>
+            <div class="form-double-space">
+                <span class="form-page-title-input">
+                    <span>{{ form.title }}</span>
+                </span>
+                <span class="form-page-priority">
+                    {{ form.priority }}
+                </span>
+            </div>
+            <div class="form-double-space-error">
                 {% for error in form.title.errors %}<span class="form-field-error">{{ error }}<br></span>{% endfor %}
-            </div>
-            <div>
-                <span class="form-page-descriptor">Add an optional link to an example product:</span>
-                <span>{{ form.link }}</span>
-                {% for error in form.link.errors %}<span class="form-field-error">{{ error }}<br></span>{% endfor %}
-            </div>
-            <div>
-                {{ form.details }}
-                {% for error in form.details.errors %}<span class="form-field-error">{{ error }}<br>{% endfor %}</span>
-            </div>
-            <div class="form-selector-space">
-                <span class="form-page-descriptor">Priority:</span>
-                <span>{{ form.priority }}</span>
                 {% for error in form.priority.errors %}<span class="form-field-error">{{ error }}<br></span>{% endfor %}
             </div>
-            <div><button class="form-page-submit" type="submit">Submit</button></div>
+            <div>
+                <span>{{ form.details }}</span>
+                {% for error in form.details.errors %}<span class="form-field-error">{{ error }}<br></span>{% endfor %}
+            </div>
+            <div>
+                <span class="form-page-descriptor">
+                    {% if wish.link %}
+                        <a href="{{ wish.link }}" target="_blank">Preview link</a>
+                    {% endif %}
+                </span>
+                <span>{{ form.link }}</span>
+                {% for error in form.link.errors %}<span class="form-field-error">{{ error }}<br>{% endfor %}</span>
+            </div>
+            <div><button class="form-page-submit" type="submit">Add</button></div>
             <div class="form-page-errors">
                 {% for error in form.non_field_errors %}
                     {{ error }}
@@ -34,5 +41,5 @@
             </div>
         </form>
     </div>
-
+    
 {% endblock content %}

@@ -24,7 +24,9 @@ class Wish(models.Model):
         blank=True
     )
     details = models.TextField(blank=True)
-    link = models.URLField(blank=True)
+    link = models.URLField(
+        max_length=500,
+        blank=True)
 
     def __str__(self):
         return self.title

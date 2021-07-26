@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js" integrity="sha512-RCgrAvvoLpP7KVgTkTctrUdv7C6t7Un3p1iaoPr1++3pybCyCsCZZN7QEHMZTcJTmcJ7jzexTO+eFpHk4OCFAg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <div class="back">
+        <a href="{% url 'my_groups' %}"><i class="fi-rr-angle-double-left"></i></a>
+    </div>
+
+    <div class="form-page-large">
+        <span class="form-page-title">Create Group</span>
+        <form class="form-page-form" method="post">{% csrf_token %}
+            <div>
+                <span>{{ form.name }}</span>
+                {% for error in form.name.errors %}<span class="form-field-error">{{ error }}<br></span>{% endfor %}
+            </div>
+            <div class="form-double-space">
+                <span class="form-page-title-input">
+                    <span>{{ form.max_gift_value }}</span>
+                </span>
+                <span class="form-page-priority">
+                    {{ form.currency }}
+                </span>
+            </div>
+            <div class="form-double-space-error">
+                {% for error in form.max_gift_value.errors %}<span class="form-field-error">{{ error }}<br></span>{% endfor %}
+                {% for error in form.currency.errors %}<span class="form-field-error">{{ error }}<br></span>{% endfor %}
+            </div>
+            <div class="form-double-space">
+                <span class="form-page-deadline-input">
+                    <span>{{ form.deadline }}</span>
+                    <script>
+                        $(function () {
+                            $("#id_deadline").datepicker({
+                            format:'dd/mm/yyyy',
+                            });
+                        });
+                    </script>
+                </span>
+                <span class="form-page-deadline-description">
+                    <span>Enter wish lists submission deadline</span>
+                </span>
+            </div>
+            <div class="form-half-space-error">
+                {% for error in form.deadline.errors %}<span class="form-field-error">{{ error }}<br></span>{% endfor %}
+            </div>
+            <div><button class="form-page-submit" type="submit">Add</button></div>
+            <div class="form-page-errors">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+    
+{% endblock content %}

@@ -54,6 +54,55 @@ class CustomGroupAdminForm(forms.ModelForm):
         model = CustomGroup
         exclude = []
 
+class GroupCreateForm(forms.ModelForm):
+    name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'Group Name',
+                'class': 'form-page-input',
+                'autofocus': 'autofocus'}))
+    max_gift_value = forms.DecimalField(
+        max_digits=20,
+        decimal_places=2,
+        required=False,
+        widget=forms.NumberInput(
+            attrs={
+                'placeholder': 'Maximum Gift Value',
+                'class': 'form-page-input'
+            }
+        )
+    )
+    DKK = 'DKK'
+    NOK = 'NOK'
+    JPY = '¥'
+    USD = "$"
+    currency_choices = [
+        ('', 'Currency'),
+        (DKK, 'DKK'),
+        (NOK, 'NOK'),
+        (JPY, '¥'),
+        (USD, '$'),
+    ]
+    currency = forms.ChoiceField(
+        choices=currency_choices,
+        required=False,
+        widget=forms.Select(
+            attrs={
+                'placeholder': 'Priority',
+                'class': 'form-page-input'}))
+    deadline = forms.DateField(
+        required=True,
+        widget=forms.DateInput(
+            attrs={
+                'placeholder': 'DD/MM/YYYY',
+                'class': 'form-page-input',
+                'autocomplete': 'off'}))
+
+    class Meta:
+        model = CustomGroup
+        fields = ['name', 'max_gift_value', 'currency', 'deadline',]
+
 
 class GroupMemberCreateForm(forms.Form):
     first_name = forms.CharField(

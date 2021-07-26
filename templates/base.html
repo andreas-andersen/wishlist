@@ -12,69 +12,83 @@
     </head>
 
     <body>
-        <header class="top-container">
-            <div class="top">
-                <div class="title-and-navbar">
-                    <span class="title"><a href="{% url 'home' %}" class="title-text">{wishlist.app}</a></span>
-                    <div class="navbar">
+        <div class="main">
+            <header class="top-container">
+                <div class="top">
+                    <div class="title-and-navbar">
+                        <span class="title"><a href="{% url 'home' %}" class="title-text">{wishlist.app}</a></span>
+                        <div class="navbar">
+                        {% if user.is_authenticated %}
+                            <div class="navbar-item">
+                                {% if user.check_multi_responsible %}
+                                    <a href="{% url 'my_lists' user.id %}">My lists</a>
+                                {% else %}
+                                    <a href="{% url 'wish_list' user.id %}">My lists</a>
+                                {% endif %}
+                            </div>
+                            <div class="navbar-item">
+                                <a href="{% url 'received_lists' %}">Received lists</a>
+                            </div>
+                            <div class="navbar-item">
+                                <a href="{% url 'my_groups' %}">My Groups</a>
+                            </div>
+                        {% endif %}
+                        </div>
+                    </div>
                     {% if user.is_authenticated %}
-                        <div class="navbar-item">
-                            {% if user.check_multi_responsible %}
-                                <a href="{% url 'my_lists' %}">My lists</a>
-                            {% else %}
-                                <a href="{% url 'wish_list' user.id %}">My lists</a>
-                            {% endif %}
-                        </div>
-                        <div class="navbar-item">
-                            <a href="{% url 'received_lists' %}">Received lists</a>
-                        </div>
-                        <div class="navbar-item">
-                            <a href="{% url 'my_groups' %}">My Groups</a>
-                        </div>
-                    {% endif %}
-                    </div>
-                </div>
-                {% if user.is_authenticated %}
-                    <div class="login">
-                        <div class="dropdown">
-                            <a href="#" id="dropdown-button-id" class="dropdown-button" onClick="dropDown()"> 
-                                <img src="{{ user.get_gravatar }}" id="gravatar">
-                            </a>
-                            <div id="dropdown-menu-id" class="dropdown-menu">
-                                <span class="dropdown-user">
-                                    <img src="{{ user.get_gravatar }}" id="dropdown-gravatar">{{ user.email }}
-                                </span>
-                                <a href="{% url 'user_details' user.id %}" class="dropdown-element">
-                                    <i class="fi-rr-edit dropdown-icon"></i>User details
+                        <div class="login">
+                            <div class="dropdown">
+                                <a href="#" id="dropdown-button-id" class="dropdown-button" onClick="dropDown()"> 
+                                    <img src="{{ user.get_gravatar }}" id="gravatar">
                                 </a>
-                                <a href="{% url 'logout' %}" class="dropdown-element">
-                                    <i class="fi-rr-sign-out dropdown-icon"></i>Log out
-                                </a>
+                                <div id="dropdown-menu-id" class="dropdown-menu">
+                                    <span class="dropdown-user">
+                                        <img src="{{ user.get_gravatar }}" id="dropdown-gravatar">{{ user.email }}
+                                    </span>
+                                    <a href="{% url 'user_details' user.id %}" class="dropdown-element">
+                                        <i class="fi-rr-edit dropdown-icon"></i>User details
+                                    </a>
+                                    <a href="{% url 'logout' %}" class="dropdown-element">
+                                        <i class="fi-rr-sign-out dropdown-icon"></i>Log out
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% else %}
-                    <div class="login-anonymous">
-                        <div class="dropdown">
-                            <a href="#" id="dropdown-button-id" class="dropdown-button anonymous-button" onClick="dropDown()"> 
-                                <i class="fi-rr-user"></i>
-                            </a>
-                            <div id="dropdown-menu-id" class="dropdown-menu">
-                                <a href="{% url 'login_user' %}" class="dropdown-element">
-                                    <i class="fi-rr-sign-in dropdown-icon"></i></i>Log in
+                    {% else %}
+                        <div class="login-anonymous">
+                            <div class="dropdown">
+                                <a href="#" id="dropdown-button-id" class="dropdown-button anonymous-button" onClick="dropDown()"> 
+                                    <i class="fi-rr-user"></i>
                                 </a>
-                                <a href="{% url 'signup_user' %}" class="dropdown-element">
-                                    <i class="fi-rr-user-add dropdown-icon"></i>Sign up
-                                </a>
+                                <div id="dropdown-menu-id" class="dropdown-menu">
+                                    <a href="{% url 'login_user' %}" class="dropdown-element">
+                                        <i class="fi-rr-sign-in dropdown-icon"></i></i>Log in
+                                    </a>
+                                    <a href="{% url 'signup_user' %}" class="dropdown-element">
+                                        <i class="fi-rr-user-add dropdown-icon"></i>Sign up
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     {% endif %}
                 </div>
+            </header>
+            <div class="main-container">
+                {% block content %}
+                {% endblock content %}
             </div>
-        </header>
-        <div class="container main">
-            {% block content %}
-            {% endblock content %}
+            <footer class="bottom-container">
+                <div class="bottom_top">
+                    <div>
+                        {wishlist.app}
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div>
+                        Copyright 2021
+                    </div>
+                </div>
+            </footer>
         </div>
     </body>
 </html>

@@ -6,10 +6,52 @@
         <a href="{% url 'home' %}"><i class="fi-rr-angle-double-left"></i></a>
     </div>
 
-    <div class="page-title">My lists</div>
-    
-    {% for user in object_list %}
-        <p><a href="{% url 'wish_list' user.pk %}">{{ user.email }}</a></p>
-    {% endfor %}
+    <div class="page-title">My Lists</div>
 
+    {% for group, users in data %}
+        <div class="list-container">
+            <div class="list-title subtitle-title">
+                <div class="list-title-title">
+                    {{ group }}
+                </div>
+                <div class="list-title-subtitle">
+                    Deadline: {{ group.deadline }}
+                </div>
+            </div>
+            <table class="list">
+                <tr class="list-top">
+                    <td class="mylists-list-name">
+                        Name
+                    </td>
+                    <td class="mylists-list-items">
+                        No. items
+                    </td>
+                    <td class="mylists-list-deadline">
+                        Deadline
+                    </td>
+                </tr>
+            
+                {% for user, listlength in users %}
+                    <tr class="list-entry">
+                        <td class="mylists-list-name">
+                            <a href="{% url 'wish_list' user.id %}" class="list-item-title">
+                                {{ user.first_name }} {{ user.last_name }}
+                            </a>
+                        </td>
+                        <td class="mylists-list-items">
+                            {{ listlength }}
+                        </td>
+                        <td class="mylists-list-deadline">
+                            {{ group.deadline }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr class="list-empty-bottom">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    {% endfor %}
 {% endblock content %}

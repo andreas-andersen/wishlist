@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="form-page">
-        <h3>Log In</h3>
+        <span class="form-page-title">Log In</span>
         <form class="form-page-form" method="post">{% csrf_token %}
             <div>{{ form.username }} {{ form.username.errors }}</div>
             <div>{{ form.password }} {{ form.password.errors }}</div>
