@@ -43,7 +43,7 @@
         {% for wish in object_list %}
             <tr class="list-entry">
                 <td class="wish-list-items">
-                    <a href="{% url 'update_wish' author_id wish.id %}" class = "item-title">
+                    <a href="{% url 'update_wish' group_id author_id wish.id %}" class = "item-title">
                         {{ wish.title }}
                     </a>
                 </td>
@@ -55,8 +55,8 @@
                 </td>
                 <td class="wish-list-actions">
                     <span>
-                        <a href="{% url 'update_wish' author_id wish.id %}">Edit</a> | 
-                        <a href="{% url 'delete_wish' wish.id %}">
+                        <a href="{% url 'update_wish' group_id author_id wish.id %}">Edit</a> | 
+                        <a href="{% url 'delete_wish' group_id wish.id %}">
                             Delete
                         </a>
                     </span>
@@ -65,7 +65,7 @@
         {% endfor %}
 
         <tr class="list-bottom">
-            <form id="create-wish", method="post" action="{% url 'wish_new' author_id %}">
+            <form id="create-wish", method="post" action="{% url 'wish_new' group_id author_id %}">
                 {% csrf_token %}
                 <td class="wish-list-items">
                     {{ form.title }}

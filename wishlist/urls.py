@@ -2,6 +2,7 @@
 from django.urls import path
 from .views import (
     WishDetailView,
+    WishListView,
     WishCreateView, 
     WishDetailedCreateView,
     WishUpdateView,
@@ -11,12 +12,14 @@ from .views import (
 urlpatterns = [
     path('wish/<int:pk>/', 
         WishDetailView.as_view(), name='wish_detail'),
-    path('wish/<int:author_id>/<int:pk>/update/', 
+    path('<int:group_id>/<int:pk>/wish_lists', 
+        WishListView.as_view(), name='wish_list'),
+    path('wish/<int:group_id>/<int:author_id>/<int:pk>/update/', 
         WishUpdateView.as_view(), name='update_wish'),
-    path('wish/<int:author_id>/new/', 
+    path('wish/<int:group_id>/<int:author_id>/new/', 
         WishCreateView.as_view(), name='wish_new'),
     path('wish/<int:pk>/detailed_new/', 
         WishDetailedCreateView.as_view(), name='wish_detailed_new'),
-    path('wish/<int:wish_id>/delete/',
+    path('wish/<int:group_id>/<int:wish_id>/delete/',
         delete_wish, name='delete_wish'),
 ]

@@ -446,8 +446,18 @@ i {
     margin: 0.5em 0 0 0;
 }
 
-.list-container {
+.list-container-container .list-container:first-child {
     position: relative;
+    margin: 3em auto 1em auto;
+}
+
+.list-container-container .list-container {
+    position: relative;
+    margin: 5em auto 1em auto;
+}
+
+.list-container {
+    position:relative;
     margin: 3em auto 1em auto;
 }
 
@@ -459,7 +469,7 @@ i {
 .noted-list {
     position: relative;
     width: 100%;
-    margin: 6em auto 8em auto;
+    margin: 3em auto 8em auto;
 }
 
 .list-top {

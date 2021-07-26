@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load tags %}
 
 {% block content %}
 
@@ -21,7 +22,7 @@
                 <a href="#add-member" class="burger-element">
                     <i class="fi-rr-users dropdown-icon"></i>Add member
                 </a>
-                {% if leader%}
+                {% if leader %}
                     <a href="#add-member" class="burger-element">
                         <i class="fi-rr-shuffle dropdown-icon"></i>Shuffle / Assignment
                     </a>
@@ -68,7 +69,7 @@
                         {{ user.first_name }} {{ user.last_name }}
                     </td>
                     <td class="members-list-wish-submitted">
-                        {% if user.has_submitted %} Yes {% else %} No {% endif %}
+                        {% get_wishlist_existence current_group user %}
                     </td>
                     <td class="members-list-wish-actions">
                         {% if user.id != user.id or user.responsible_by == current_user or leader %}
@@ -120,7 +121,7 @@
                 </form>
             </tr>
         </table>
-        {% if invitation_empty %}
+        {% if invitation %}
             <div class="list-container-2">
                 <div class="list-title plain-title">
                     Invited users

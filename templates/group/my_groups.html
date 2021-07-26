@@ -6,7 +6,22 @@
         <a href="{% url 'home' %}"><i class="fi-rr-angle-double-left"></i></a>
     </div>
 
-    <div class="page-title">My Groups</div>
+    <div class="page-title">
+        <div>My Groups</div>
+        {% if user.is_leader %}
+            <div id="burger" class="burger" onclick="dropBurger()">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <div id="burger-menu-id" class="burger-menu">
+                    <a href="{% url 'create_group' %}" class="burger-element">
+                        <i class="fi-rr-folder-add dropdown-icon"></i>Create New Group
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
 
     {% if user.is_leader %}
         <table class="list">
@@ -47,10 +62,11 @@
             {% empty %}
                 <p>No groups found</p>
             {% endfor %}
-            <tr class="list-bottom">
-                <td class="groups-list-create">
-                    <a href="{% url 'create_group' %}">+ Create New Group</a>
-                </td>
+            <tr class="list-empty-bottom">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         </table>
     {% else %}

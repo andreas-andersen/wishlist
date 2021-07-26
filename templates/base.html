@@ -19,12 +19,8 @@
                         <span class="title"><a href="{% url 'home' %}" class="title-text">{wishlist.app}</a></span>
                         <div class="navbar">
                         {% if user.is_authenticated %}
-                            <div class="navbar-item">
-                                {% if user.check_multi_responsible %}
-                                    <a href="{% url 'my_lists' user.id %}">My lists</a>
-                                {% else %}
-                                    <a href="{% url 'wish_list' user.id %}">My lists</a>
-                                {% endif %}
+                            <div class="navbar-item">  
+                                <a href="{% url 'my_lists' user.id %}">My lists</a>
                             </div>
                             <div class="navbar-item">
                                 <a href="{% url 'received_lists' %}">Received lists</a>

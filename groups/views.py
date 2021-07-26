@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from accounts.models import CustomUser
+from wishlist.models import Wish
 from accounts.tokens import invitation_token
 from .models import CustomGroup
 from .forms import (
@@ -81,7 +82,7 @@ class GroupMembersListView(
         data = super(GroupMembersListView, self).get_context_data(**kwargs)
         group = CustomGroup.objects.get(id=self.kwargs['pk'])
         data['leader'] = group.leader == self.request.user
-        data['invitation_empty'] = len(group.invited_users.all())
+        data['invitation'] = len(group.invited_users.all())
         data['current_group'] = group
         data['current_user'] = self.request.user
         data['invited_users'] = group.invited_users.all()

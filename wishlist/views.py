@@ -1,3 +1,4 @@
+from groups.models import CustomGroup
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -38,10 +39,15 @@ class WishCreateView(
 
     def form_valid(self, form):
         form.instance.author = CustomUser.objects.get(id=self.kwargs['author_id'])
+        form.instance.group = CustomGroup.objects.get(id=self.kwargs['group_id'])
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('wish_list', kwargs={'pk': self.kwargs['author_id']})
+        return reverse(
+            'wish_list', 
+            kwargs={
+                'group_id': self.kwargs['group_id'],
+                'pk': self.kwargs['author_id']})
 
     def test_func(self):
         wish_author = CustomUser.objects.get(id=self.kwargs['author_id'])
@@ -80,7 +86,11 @@ class WishUpdateView(
     template_name = 'wish/update.html'
 
     def get_success_url(self):
-        return reverse('wish_list', kwargs={'pk': self.kwargs['author_id']})
+        return reverse(
+            'wish_list', 
+            kwargs={
+                'group_id': self.kwargs['group_id'],
+                'pk': self.kwargs['author_id']})
 
     def test_func(self):
         wish_author = self.get_object().author
@@ -89,20 +99,21 @@ class WishUpdateView(
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['group_id'] = self.kwargs['group_id']
         data['author_id'] = self.kwargs['author_id']
         data['wish'] = Wish.objects.get(id=self.kwargs['pk'])
         return data
 
 @login_required
-def delete_wish(request, wish_id):
-    current_wish = Wish.objects.get(id=wish_id)
+def delete_wish(request, group_id, wish_id):
+    current_wish = Wish.objects.get(group_id=group_id, id=wish_id)
     owner = current_wish.author
     responsible_user = owner.responsible_by
     if request.user != responsible_user:
         return HttpResponseForbidden()
     else:
         Wish.objects.get(id=wish_id).delete()
-        return redirect('wish_list', owner.id)
+        return redirect('wish_list', group_id, owner.id)
 
 class WishListView(LoginRequiredMixin, ListView):
     model = Wish
@@ -111,12 +122,13 @@ class WishListView(LoginRequiredMixin, ListView):
     fields = ['title', 'author', 'priority', 'details']
 
     def get_queryset(self):
-        return Wish.objects.filter(author_id=self.kwargs['pk'])
+        return Wish.objects.filter(author_id=self.kwargs['pk']).filter(group_id=self.kwargs['group_id'])
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         author = CustomUser.objects.get(id=self.kwargs['pk'])
-        data['author_id'] = author.id
+        data['group_id'] = self.kwargs['group_id']
+        data['author_id'] = self.kwargs['pk']
         data['author_name'] = get_possessive_ending(
             get_name_or_email(author))
         data['form'] = WishCreateForm()

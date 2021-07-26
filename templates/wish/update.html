@@ -2,11 +2,11 @@
 
 {% block content %}
     <div class="back">
-        <a href="{% url 'wish_list' author_id %}"><i class="fi-rr-angle-double-left"></i></a>
+        <a href="{% url 'wish_list' group_id author_id %}"><i class="fi-rr-angle-double-left"></i></a>
     </div>
 
     <div class="form-page-large">
-        <span class="form-page-title">Add wish</span>
+        <span class="form-page-title">Edit wish</span>
         <form class="form-page-form" method="post">{% csrf_token %}
             <div class="form-double-space">
                 <span class="form-page-title-input">
@@ -28,12 +28,14 @@
                 <span class="form-page-descriptor">
                     {% if wish.link %}
                         <a href="{{ wish.link }}" target="_blank">Preview link</a>
+                    {% else %}
+                        Add an optional link to a product (e.g. Amazon):
                     {% endif %}
                 </span>
                 <span>{{ form.link }}</span>
                 {% for error in form.link.errors %}<span class="form-field-error">{{ error }}<br>{% endfor %}</span>
             </div>
-            <div><button class="form-page-submit" type="submit">Add</button></div>
+            <div><button class="form-page-submit" type="submit">Edit</button></div>
             <div class="form-page-errors">
                 {% for error in form.non_field_errors %}
                     {{ error }}
