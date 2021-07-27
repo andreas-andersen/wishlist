@@ -36,7 +36,6 @@ h2 {
     height: 2em;
     font-weight: 300;
     font-size: 2em;
-    padding: 0 0.5em 0 0;
 }
 
 h3 {
@@ -582,6 +581,14 @@ tr.list-entry-important td {
     margin: 0.5em 0 0 0;
 }
 
+.form-assignment-double-space {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0.5em 0 0 0;
+}
+
 .form-selector-space{
     display: flex;
     flex-direction: row;
@@ -610,49 +617,17 @@ tr.list-entry-important td {
     padding: 0 0 0 2em;
 }
 
+.form-page-member, .form-page-assignment {
+    width: 50%;
+    margin: 0 0.1em 0 0;
+}
+
 .form-double-space-error {
     align-items: left;
 }
 
 .form-page-descriptor {
     font-size: 0.8em
-}
-
-input.form-page-input {
-    height: 4em;
-    width: 100%;
-    box-sizing: border-box;
-    text-align: center;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 1em;
-    border-radius: 0.5em;
-    border: 0.1em solid gray;
-    padding: 0.5em 0;
-    margin: 0.1em 0 0 0;
-}
-
-textarea.form-page-input {
-    height: 10em;
-    width: 100%;
-    box-sizing: border-box;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 1em;
-    border-radius: 0.5em;
-    padding: 0.5em 0.5em;
-    margin: 0.1em 0 0 0;
-}
-
-select.form-page-input {
-    height: 4em;
-    width: 100%;
-    box-sizing: border-box;
-    text-align: center;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 1em;
-    border-radius: 0.5em;
-    border: 0.1em solid gray;
-    padding: 0;
-    margin: 0.1em 0 0 0;
 }
 
 .form-page-password {
@@ -839,6 +814,19 @@ input.in-page-input {
     box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
+input.form-page-input {
+    height: 4em;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    border-radius: 0.5em;
+    border: 0.1em solid gray;
+    padding: 0.5em 0;
+    margin: 0.1em 0 0 0;
+}
+
 input:focus {
     outline: 0;
     border: 0.15em solid #2B2D42;
@@ -850,4 +838,28 @@ select.in-page-input {
     border: 0.1em solid gray;
     padding: 0.05em 0.4em;
     width: 100%;
+}
+
+select.form-page-input {
+    height: 4em;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    border-radius: 0.5em;
+    border: 0.1em solid gray;
+    padding: 0;
+    margin: 0.1em 0 0 0;
+}
+
+textarea.form-page-input {
+    height: 10em;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    border-radius: 0.5em;
+    padding: 0.5em 0.5em;
+    margin: 0.1em 0 0 0;
 }

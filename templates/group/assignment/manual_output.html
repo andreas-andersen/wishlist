@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    {% for member, assignment in output %}
+        <p>
+            {{ member.first_name }} {{ member.last_name }} is assigned to 
+            {{ assignment.first_name }} {{ assignment.last_name }}
+        </p>
+    {% endfor %}
+
+    <a href="{% url 'assign' group_id %}"> Confirm assignment </a>
+
+{% endblock %}

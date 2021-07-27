@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http.response import HttpResponseForbidden
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import login
 from django.template.loader import render_to_string
@@ -12,11 +12,16 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from accounts.models import CustomUser
 from wishlist.models import Wish
 from accounts.tokens import invitation_token
-from .models import CustomGroup
+from .models import (
+    CustomGroup, 
+    Assignment,
+    Assignments,
+)
 from .forms import (
     GroupCreateForm,
     GroupMemberCreateForm,
     GroupMemberInviteForm,
+    ManualAssignmentForm,
 )
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import (
@@ -235,5 +240,58 @@ def uninvite_user_from_group(request, group_id, user_id):
     if current_group.leader == request.user:
         current_group.invited_users.remove(current_user)
         return redirect('group_members', group_id)        
+    else:
+        return HttpResponseForbidden()
+
+
+@login_required
+def manual_assignment_view(request, group_id):
+    current_group = CustomGroup.objects.get(id=group_id)
+    if current_group.leader == request.user:
+        if request.method == 'POST':
+            form = ManualAssignmentForm(request.POST, group=current_group)
+
+            if form.is_valid():
+                cleaned_data = form.cleaned_data["assignments"]
+                assignments = [(key.strip('assignment_'), values) for key, values in cleaned_data]
+                output = [(CustomUser.objects.get(id=key), CustomUser.objects.get(id=value)) 
+                    for key, value in assignments]
+
+                request.session['assignments'] = assignments
+                return render(
+                    request, 'group/assignment/manual_output.html',
+                    {'output': output, 'group_id': group_id}
+                )
+        else:
+            form = ManualAssignmentForm(group=current_group)
+
+        return render(
+            request, 'group/assignment/manual.html', 
+            {'form': form, 'group_id': group_id,}
+        )    
+
+    else:
+        return HttpResponseForbidden()
+
+@login_required
+def assign(request, group_id):
+    current_group = CustomGroup.objects.get(id=group_id)
+    new_assignments = Assignments(group = current_group)
+    new_assignments.save()
+    assignments = request.session["assignments"]
+    user_assignments = [(CustomUser.objects.get(id=key), CustomUser.objects.get(id=value)) 
+        for key, value in assignments]
+
+    if current_group.leader == request.user:
+        for member, assignment in user_assignments:
+            new_assignment = Assignment(
+                member = member,
+                assignment = assignment
+            )
+            new_assignment.save()
+            new_assignments.assignments.add(new_assignment)
+
+        return redirect('group_members', group_id)
+
     else:
         return HttpResponseForbidden()

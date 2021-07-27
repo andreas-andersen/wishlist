@@ -18,7 +18,7 @@
             <span></span>
             <span></span>
             <div id="burger-menu-id" class="burger-menu">
-                <a href="{% url 'wish_detailed_new' author_id %}" class="burger-element">
+                <a href="{% url 'detailed_create_wish' group_id author_id %}" class="burger-element">
                     <i class="fi-rr-list dropdown-icon"></i>Add Wish
                 </a>
             </div>
@@ -65,7 +65,7 @@
         {% endfor %}
 
         <tr class="list-bottom">
-            <form id="create-wish", method="post" action="{% url 'wish_new' group_id author_id %}">
+            <form id="create-wish", method="post" action="{% url 'create_wish' group_id author_id %}">
                 {% csrf_token %}
                 <td class="wish-list-items">
                     {{ form.title }}

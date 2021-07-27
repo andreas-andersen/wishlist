@@ -6,12 +6,56 @@
         <a href="{% url 'home' %}"><i class="fi-rr-angle-double-left"></i></a>
     </div>
 
-    <div class="page-title">My received lists</div>
+    <div class="page-title">Received Lists</div>
 
-    {% for user in object_list %}
-        <p>{{ user.username }}</p>
-    {% empty %}
-        <p>No wish lists received yet</p>
-    {% endfor %}
+    <div class="list-container-container">
+        {% for group, assignments in data %}
+            <div class="list-container">
+                <div class="list-title subtitle-title">
+                    <div class="list-title-title">
+                        {{ group.group }}
+                    </div>
+                    <div class="list-title-subtitle">
+                        Assigned at: {{ group.time }}
+                    </div>
+                </div>
+                <table class="list">
+                    <tr class="list-top">
+                        <td class="received-list-name">
+                            Name
+                        </td>
+                        <td class="received-list-assigned">
+                            Assigned to
+                        </td>
+                        <td class="received-list-deadline">
+                            Deadline
+                        </td>
+                    </tr>
+                
+                    {% for member, assignment in assignments %}
+                        <tr class="list-entry">
+                            <td class="received-list-name">
+                                <a href="" class="list-item-title">
+                                    {{ member.first_name }} {{ member.last_name }}
+                                </a>
+                            </td>
+                            <td class="received-list-assigned">
+                                {{ assignment.first_name }} {{ assignment.last_name }}
+                            </td>
+                            <td class="received-list-deadline">
+                                {{ group.deadline }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    
+                    <tr class="list-empty-bottom">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        {% endfor %}
+    </div>
 
 {% endblock content %}

@@ -1,7 +1,7 @@
 from groups.models import CustomGroup
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from pages.views import get_name_or_email, get_possessive_ending
 from .models import Wish
 from .forms import (
@@ -45,9 +45,7 @@ class WishCreateView(
     def get_success_url(self):
         return reverse(
             'wish_list', 
-            kwargs={
-                'group_id': self.kwargs['group_id'],
-                'pk': self.kwargs['author_id']})
+            kwargs={'group_id': self.kwargs['group_id'], 'pk': self.kwargs['author_id']})
 
     def test_func(self):
         wish_author = CustomUser.objects.get(id=self.kwargs['author_id'])
@@ -59,14 +57,17 @@ class WishDetailedCreateView(
     model = Wish
     form_class = WishDetailedCreateForm
     context_object_name = 'wish'
-    template_name = 'wish/new.html'
+    template_name = 'wish/create.html'
 
     def form_valid(self, form):
         form.instance.author = CustomUser.objects.get(id=self.kwargs['pk'])
+        form.instance.group = CustomGroup.objects.get(id=self.kwargs['group_id'])
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('wish_list', kwargs={'pk': self.kwargs['pk']})
+        return reverse(
+            'wish_list', 
+            kwargs={'group_id': self.kwargs['group_id'], 'pk': self.kwargs['pk']})
 
     def test_func(self):
         wish_author = self.get_object().author
@@ -75,6 +76,7 @@ class WishDetailedCreateView(
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['group_id'] = self.kwargs['group_id']
         data['author_id'] = self.kwargs['pk']
         return data
 
@@ -88,9 +90,7 @@ class WishUpdateView(
     def get_success_url(self):
         return reverse(
             'wish_list', 
-            kwargs={
-                'group_id': self.kwargs['group_id'],
-                'pk': self.kwargs['author_id']})
+            kwargs={'group_id': self.kwargs['group_id'], 'pk': self.kwargs['author_id']})
 
     def test_func(self):
         wish_author = self.get_object().author

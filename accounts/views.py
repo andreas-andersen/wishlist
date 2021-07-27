@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .models import CustomUser
-from groups.models import CustomGroup
+from groups.models import CustomGroup, Assignments
 from wishlist.models import Wish
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
@@ -63,17 +63,42 @@ class CustomUserPasswordChangeView(
 
 @login_required
 def my_wish_lists_view(request, user_id):
-    template_name = 'wish/my_lists.html'
-    current_user = CustomUser.objects.get(id=user_id)
-    current_groups = CustomGroup.objects.filter(user=current_user)
-    data = [
-        (group, 
-        [(user, len(Wish.objects.filter(author=user).filter(group=group))) 
-            for user in group.user_set.all().filter(responsible_by=current_user)])
-        for group in current_groups
-    ]
+    if user_id == request.user:
+        current_user = CustomUser.objects.get(id=user_id)
+        current_groups = CustomGroup.objects.filter(user=current_user)
+        data = [
+            (group, 
+            [(user, len(Wish.objects.filter(author=user).filter(group=group))) 
+                for user in group.user_set.all().filter(responsible_by=current_user)])
+            for group in current_groups
+        ]
+
+        return render(request, 'wish/my_lists.html', {'data': data})
+
+    else:
+        return HttpResponseForbidden()
     
-    return render(request, template_name, {'data': data})
+    
+@login_required
+def received_lists_view(request, user_id):
+    if user_id == request.user.id:
+        current_user = CustomUser.objects.get(id=user_id)
+        responsible_users = CustomUser.objects.filter(responsible_by=current_user)
+        current_groups = CustomGroup.objects.filter(user=current_user)
+        current_assignments = Assignments.objects.filter(group__in=current_groups)
+
+        data = [
+            (assignments, 
+            [(assignment.member, assignment.assignment) for assignment in 
+                assignments.assignments.filter(assignment__in=responsible_users)]) 
+            for assignments in current_assignments
+        ]
+
+        return render(request, 'wish/received_lists.html', {'data': data})
+
+    else:
+        return HttpResponseForbidden()
+
 
 class RecWishListsView(LoginRequiredMixin, ListView):
     model = CustomUser

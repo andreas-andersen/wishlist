@@ -9,6 +9,8 @@ from .views import (
     group_member_create_view,
     remove_user_from_group,
     uninvite_user_from_group,
+    manual_assignment_view,
+    assign,
 )
 
 urlpatterns = [
@@ -30,4 +32,8 @@ urlpatterns = [
         uninvite_user_from_group, name='uninvite_user'),
     path('<uidb64>/<token>/accept_invitation',
         accept_invitation_view, name='accept_invitation'),
+    path('<int:group_id>/assignment/manual',
+        manual_assignment_view, name='manual_assignment'),
+    path('<int:group_id>/assignment/assign',
+        assign, name='assign'),
 ]

@@ -23,7 +23,7 @@
                     <i class="fi-rr-users dropdown-icon"></i>Add member
                 </a>
                 {% if leader %}
-                    <a href="#add-member" class="burger-element">
+                    <a href="{% url 'manual_assignment' current_group.id %}" class="burger-element">
                         <i class="fi-rr-shuffle dropdown-icon"></i>Shuffle / Assignment
                     </a>
                 {% endif %}
@@ -54,6 +54,7 @@
                     </td>
                 {% endif %}
             </tr>
+
             {% for user in object_list %}
                 <tr class="list-entry {% if current_group.leader == user %}list-entry-important{% endif %}">
                     {% if leader %}
@@ -86,6 +87,7 @@
                     </td>
                 </tr> 
             {% endfor %}
+
             <tr class="list-empty-bottom">
                 <td></td>
                 <td></td>
@@ -134,6 +136,7 @@
                         <td class="members-list-invited-action">
                         </td>
                     </tr>
+
                     {% for user in invited_users %}
                         <tr class="list-entry">
                             <td class="members-list-invited-email">
@@ -146,6 +149,7 @@
                             </td>
                         </tr>
                     {% endfor %}
+
                     <tr class="list-empty-bottom">
                         <td></td>
                         <td></td>
