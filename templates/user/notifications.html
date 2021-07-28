@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="back">
+        <a href="{% url 'home' %}"><i class="fi-rr-angle-double-left"></i></a>
+    </div>
+
+    <div class="page-title">
+        <div>Notifications</div>
+        {% if not current_group.closed %}
+            <div id="burger" class="burger" onclick="dropBurger()">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <div id="burger-menu-id" class="burger-menu">
+                    <a href="{% url 'mark_all_as_read' user_id %}" class="burger-element">
+                        <i class="fi-rr-list-check dropdown-icon"></i>Mark all as read
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {{ notification.type }} {{ notification.group }}
+
+    <div class="info-page">
+        <div class="info-page-notifications">
+            {% for notification in notifications %}
+                <div class="info-page-notification-entry {% if notification.read %}read{% endif %}">
+                    <div class="info-page-notification-content">
+                        {{ notification.content }} 
+                    </div>
+                    {% if notification.type == 'INV' and not notification.read %}
+                        <div class="info-page-notification-action">
+                            <a href="{% url 'accept_notification_invitation' notification.group.id user.id notification.id %}">
+                                <div class="choice-icon-container">
+                                    <span class="yes-icon"><i class="fi-rr-check"></i></span>
+                                    <span>Join</span>
+                                </div>
+                            </a>
+                            <a href="{% url 'decline_notification_invitation' notification.group.id user.id notification.id %}">
+                                <div class="choice-icon-container">
+                                    <div class="no-icon"><i class="fi-rr-cross"></i></div> Decline
+                                </div>
+                            </a>
+                        </div>
+                    {% endif %}                
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

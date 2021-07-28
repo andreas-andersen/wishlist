@@ -41,26 +41,32 @@
             </tr>
         
             {% for group in object_list %}
-                <tr class="list-entry">
-                    <td class="groups-list-name">
-                        <a href="{% url 'group_members' group.pk %}" class="list-item-title">
-                            {{ group.name }}
-                        </a>
-                    </td>
-                    <td class="groups-list-leader">
-                        {{ group.leader.first_name }} {{ group.leader.last_name }}
-                    </td>
-                    <td class="groups-list-deadline">
-                        {{ group.deadline }}
-                    </td>
-                    <td class="groups-list-actions">
-                        <a href="{% url 'delete_group' group.id %}">
-                            - Delete
-                        </a>
-                    </td>
-                </tr>
+                {% if not group.closed %}
+                    <tr class="list-entry">
+                        <td class="groups-list-name">
+                            <a href="{% url 'group_members' group.pk %}" class="list-item-title">
+                                {{ group.name }}
+                            </a>
+                        </td>
+                        <td class="groups-list-leader">
+                            {{ group.leader.first_name }} {{ group.leader.last_name }}
+                        </td>
+                        <td class="groups-list-deadline">
+                            {% if group.closed %}
+                                CLOSED
+                            {% else %}
+                                {{ group.deadline }}
+                            {% endif %}
+                        </td>
+                        <td class="groups-list-actions">
+                            <a href="{% url 'delete_group' group.id %}">
+                                - Delete
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
             {% empty %}
-                <p>No groups found</p>
+                <p>No active groups found</p>
             {% endfor %}
             <tr class="list-empty-bottom">
                 <td></td>
@@ -84,22 +90,30 @@
             </tr>
         
             {% for group in object_list %}
-                <tr class="list-entry">
-                    <td class="groups-list-name">
-                        <a href="{% url 'group_members' group.pk %}" class="list-item-title">
-                            {{ group.name }}
-                        </a>
-                    </td>
-                    <td class="groups-list-leader">
-                        {{ group.leader.first_name }} {{ group.leader.last_name }}
-                    </td>
-                    <td class="groups-list-deadline">
-                        {{ group.deadline }}
-                    </td>
-                </tr>
+                {% if not group.closed %}
+                    <tr class="list-entry">
+                        <td class="groups-list-name">
+                            <a href="{% url 'group_members' group.pk %}" class="list-item-title">
+                                {{ group.name }}
+                            </a>
+                        </td>
+                        <td class="groups-list-leader">
+                            {{ group.leader.first_name }} {{ group.leader.last_name }}
+                        </td>
+                        <td class="groups-list-deadline">
+                            {{ group.deadline }}
+                        </td>
+                    </tr>
+                {% endif %}
             {% empty %}
-                <p>No groups found</p>
+                <p>No active groups found</p>
             {% endfor %}
+            <tr class="list-empty-bottom">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
         </table>
     {% endif %}
 

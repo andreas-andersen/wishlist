@@ -1,12 +1,12 @@
 <!-- templates/base.html -->
 <!DOCTYPE html>
 {% load static %}
-<script src="{% static 'js/dropdown.js' %}"></script>
 <html>
     <head>
         <title>Andersen's Christmas Wishlist</title>
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
         <link rel="stylesheet" href="{% static 'css/uicons.css' %}">
+        <script src="{% static 'js/dropdown.js' %}"></script>
         {% block head %}
         {% endblock head %}
     </head>
@@ -34,13 +34,22 @@
                     {% if user.is_authenticated %}
                         <div class="login">
                             <div class="dropdown">
+                                {% if user.get_notifications %}    
+                                    <div class="notifications-counter">
+                                        <span>{{ user.get_notifications }}</span>                                    
+                                    </div>
+                                {% endif %}    
                                 <a href="#" id="dropdown-button-id" class="dropdown-button" onClick="dropDown()"> 
                                     <img src="{{ user.get_gravatar }}" id="gravatar">
                                 </a>
                                 <div id="dropdown-menu-id" class="dropdown-menu">
                                     <span class="dropdown-user">
-                                        <img src="{{ user.get_gravatar }}" id="dropdown-gravatar">{{ user.email }}
+                                        <img src="{{ user.get_gravatar }}" id="dropdown-gravatar">{{ user.get_email_30char }}
                                     </span>
+                                    <a href="{% url 'notifications' user.id %}" class="dropdown-element">
+                                        <i class="fi-rr-bell dropdown-icon" class="dropdown-element"></i>Notifications 
+                                        {% if user.get_notifications %}({{ user.get_notifications }}){% endif %}
+                                    </a>
                                     <a href="{% url 'user_details' user.id %}" class="dropdown-element">
                                         <i class="fi-rr-edit dropdown-icon"></i>User details
                                     </a>
@@ -69,10 +78,12 @@
                     {% endif %}
                 </div>
             </header>
+
             <div class="main-container">
                 {% block content %}
                 {% endblock content %}
             </div>
+
             <footer class="bottom-container">
                 <div class="bottom_top">
                     <div>

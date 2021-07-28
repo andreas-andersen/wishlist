@@ -9,7 +9,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from accounts.models import CustomUser
+from accounts.models import CustomUser, Notification
 from wishlist.models import Wish
 from accounts.tokens import invitation_token
 from .models import (
@@ -105,8 +105,9 @@ def group_member_invite_view(request, group_id, user_id):
     current_group = CustomGroup.objects.get(id=group_id)
     current_user = CustomUser.objects.get(id=user_id)
 
-    if (current_group.leader == request.user or 
-            current_user.is_responsible == request.user):
+    if ((current_group.leader == request.user or 
+            current_user.is_responsible == request.user) and not
+                current_group.closed):
 
         if request.method == 'POST':
             form = GroupMemberInviteForm(request.POST)
@@ -130,6 +131,15 @@ def group_member_invite_view(request, group_id, user_id):
 
                     else:
                         current_group.invited_users.add(existing_user)
+                        new_notification = Notification(
+                            user=existing_user,
+                            type='INV',
+                            group=current_group,
+                            content=(
+                                f'You have received an invitaion from <b>{current_user.first_name} '
+                                f'{current_user.last_name}</b> to join to group <b>{current_group.name}</b>!')
+                        )
+                        new_notification.save()
                         messages.success(
                             request, f'User with {email} has been invited!',
                             extra_tags='invite')
@@ -177,22 +187,84 @@ def accept_invitation_view(request, uidb64, token):
     except(TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
         user = None
     if user is not None and invitation_token.check_token(user, token):
-        invited_group = CustomGroup.objects.filter(invited_users=user)[0]
-        user.is_active = True
-        invited_group.invited_users.remove(user)
-        invited_group.user_set.add(user)
-        user.save()
-        login(request, user)
-        return redirect('activate', user.id)
+
+        if CustomGroup.objects.filter(invited_users=user).exists():
+            invited_group = CustomGroup.objects.filter(invited_users=user)[0]
+            user.is_active = True
+            invited_group.invited_users.remove(user)
+            invited_group.user_set.add(user)
+            user.save()
+            login(request, user)
+
+            return redirect('activate', user.id)
+
     else:
         return HttpResponse('Activation link is invalid!')
+
+@login_required
+def accept_notification_invitation_view(request, group_id, user_id, notification_id):
+    current_user = CustomUser.objects.get(id=user_id)
+    current_group = CustomGroup.objects.get(id=group_id)
+    current_notification = Notification.objects.get(id=notification_id)
+
+    if (current_user == request.user and not current_group.closed and
+            current_user in current_group.invited_users.all()):
+        current_group.invited_users.remove(current_user)
+        current_group.user_set.add(current_user)
+        current_group.save()
+
+        current_notification.read = True
+        current_notification.save()
+
+        new_notification = Notification(
+            user=current_group.leader,
+            type='ETC',
+            content=(
+                f'<b>{current_user.first_name} {current_user.last_name}</b> has ' 
+                f'accepted your invitation to join <b>{current_group.name}</b>!')
+        )
+        new_notification.save()
+        
+        return redirect('notifications', user_id)
+    
+    else:
+        return HttpResponseForbidden()
+
+@login_required
+def decline_notification_invitation_view(request, group_id, user_id, notification_id):
+    current_user = CustomUser.objects.get(id=user_id)
+    current_group = CustomGroup.objects.get(id=group_id)
+    current_notification = Notification.objects.get(id=notification_id)
+
+    if (current_user == request.user and not current_group.closed and
+            current_user in current_group.invited_users.all()):
+        current_group.invited_users.remove(current_user)
+        current_group.save()
+
+        current_notification.read = True
+        current_notification.save()
+
+        new_notification = Notification(
+            user=current_group.leader,
+            type='ETC',
+            content=(
+                f'<b>{current_user.first_name} {current_user.last_name}</b> has ' 
+                f'declined your invitation to join <b>{current_group.name}</b>.')
+        )
+        new_notification.save()
+        
+        return redirect('notifications', user_id)
+    
+    else:
+        return HttpResponseForbidden()
+
 
 @login_required
 def group_member_create_view(request, group_id, user_id):
     current_group = CustomGroup.objects.get(id=group_id)
     current_user = CustomUser.objects.get(id=user_id)
 
-    if current_user.is_self_responsible:
+    if current_user.is_self_responsible and not current_group.closed:
         if request.method == 'POST':
             form = GroupMemberCreateForm(request.POST)
 
@@ -226,8 +298,9 @@ def group_member_create_view(request, group_id, user_id):
 def remove_user_from_group(request, group_id, user_id):
     current_group = CustomGroup.objects.get(id=group_id)
     current_user = CustomUser.objects.get(id=user_id)
-    if (current_group.leader == request.user or 
-            current_user.is_responsible == request.user):
+    if ((current_group.leader == request.user or 
+            current_user.is_responsible == request.user) and not
+                current_group.closed):
         current_group.user_set.remove(current_user)
         return redirect('group_members', group_id)
     else:
@@ -237,7 +310,7 @@ def remove_user_from_group(request, group_id, user_id):
 def uninvite_user_from_group(request, group_id, user_id):
     current_group = CustomGroup.objects.get(id=group_id)
     current_user = CustomUser.objects.get(id=user_id)
-    if current_group.leader == request.user:
+    if current_group.leader == request.user and not current_group.closed:
         current_group.invited_users.remove(current_user)
         return redirect('group_members', group_id)        
     else:
@@ -247,7 +320,7 @@ def uninvite_user_from_group(request, group_id, user_id):
 @login_required
 def manual_assignment_view(request, group_id):
     current_group = CustomGroup.objects.get(id=group_id)
-    if current_group.leader == request.user:
+    if current_group.leader == request.user and not current_group.closed:
         if request.method == 'POST':
             form = ManualAssignmentForm(request.POST, group=current_group)
 
@@ -276,13 +349,14 @@ def manual_assignment_view(request, group_id):
 @login_required
 def assign(request, group_id):
     current_group = CustomGroup.objects.get(id=group_id)
-    new_assignments = Assignments(group = current_group)
-    new_assignments.save()
-    assignments = request.session["assignments"]
-    user_assignments = [(CustomUser.objects.get(id=key), CustomUser.objects.get(id=value)) 
-        for key, value in assignments]
 
-    if current_group.leader == request.user:
+    if current_group.leader == request.user and not current_group.closed:
+        new_assignments = Assignments(group = current_group)
+        new_assignments.save()
+        assignments = request.session["assignments"]
+        user_assignments = [(CustomUser.objects.get(id=key), CustomUser.objects.get(id=value)) 
+            for key, value in assignments]
+
         for member, assignment in user_assignments:
             new_assignment = Assignment(
                 member = member,

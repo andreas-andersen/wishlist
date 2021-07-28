@@ -37,10 +37,30 @@ class CustomGroup(Group):
         choices=currency_choices,
         default=NOK,
     )
+    MANUAL = 'M'
+    USERWISE_RANDOM = 'U'
+    RANDOM = 'R'
+    assignment_rule_choices = [
+        (MANUAL, 'Manual'),
+        (USERWISE_RANDOM, 'User-wise random'),
+        (RANDOM, 'Random'),
+    ]
+    assignment_rule = models.CharField(
+        max_length=1,
+        choices=assignment_rule_choices,
+        default=RANDOM,
+    )
+    confirm_assignment = models.BooleanField(
+        default=False
+    )
+    
     created = models.DateTimeField(auto_now_add=True)
     deadline = models.DateField(
         null=True,
         blank=True
+    )
+    closed = models.BooleanField(
+        default=False
     )
 
     class Meta:

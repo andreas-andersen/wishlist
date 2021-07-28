@@ -10,94 +10,160 @@
 
     <div class="page-title">
         <div>{{ current_group.name }}</div>
-        <div id="burger" class="burger" onclick="dropBurger()">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <div id="burger-menu-id" class="burger-menu">
-                <a href="#invite" class="burger-element">
-                    <i class="fi-rr-paper-plane dropdown-icon"></i>Invite user
-                </a>
-                <a href="#add-member" class="burger-element">
-                    <i class="fi-rr-users dropdown-icon"></i>Add member
-                </a>
-                {% if leader %}
-                    <a href="{% url 'manual_assignment' current_group.id %}" class="burger-element">
-                        <i class="fi-rr-shuffle dropdown-icon"></i>Shuffle / Assignment
+        {% if not current_group.closed %}
+            <div id="burger" class="burger" onclick="dropBurger()">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <div id="burger-menu-id" class="burger-menu">
+                    <a href="#invite" class="burger-element">
+                        <i class="fi-rr-paper-plane dropdown-icon"></i>Invite user
                     </a>
-                {% endif %}
+                    <a href="#add-member" class="burger-element">
+                        <i class="fi-rr-users dropdown-icon"></i>Add member
+                    </a>
+                    {% if leader %}
+                        <a href="{% url 'manual_assignment' current_group.id %}" class="burger-element">
+                            <i class="fi-rr-shuffle dropdown-icon"></i>Shuffle / Assignment
+                        </a>
+                    {% endif %}
+                </div>
             </div>
-        </div>
+        {% endif %}
     </div>
+
     <div class="list-container">
-        <div class="list-title plain-title">
-            <div>
-                Group members
+        {% if not current_group.closed %}
+            <div class="list-title plain-title">
+                <div>
+                    Group members
+                </div>
             </div>
-        </div>
-        <table class="list">
-            <tr class="list-top">
-                {% if leader %}
+        {% else %}
+            <div class="list-title subtitle-title">
+                <div class="list-title-title">
+                    Group members
+                </div>
+                <div class="list-title-subtitle">
+                    CLOSED
+                </div>
+            </div>
+        {% endif %}
+
+        {% if leader %}
+            <table class="list">
+                <tr class="list-top">
                     <td class="members-list-email">
                         Email
                     </td>
-                {% endif %}
-                <td class="members-list-name">
-                    Name
-                </td>
-                {% if leader %}
+                    <td class="members-list-name">
+                        Name
+                    </td>
                     <td class="members-list-wish-submitted">
                         List Submitted
                     </td>
                     <td class="members-list-actions">
                     </td>
-                {% endif %}
-            </tr>
-
-            {% for user in object_list %}
-                <tr class="list-entry {% if current_group.leader == user %}list-entry-important{% endif %}">
-                    {% if leader %}
+                </tr>
+                {% for user in object_list %}
+                    <tr class="list-entry {% if current_group.leader == user %}list-entry-important{% endif %}">
                         <td class="members-list-email">
                             {% if user.is_self_responsible %}
                                 <a href="" class = "item-title">
-                                    {{ user.email }}
+                                    {{ user.get_email_30char }}
                                 </a>
                             {% endif %}
                         </td>
-                    {% endif %}
-                    <td class="members-list-name">
-                        {{ user.first_name }} {{ user.last_name }}
-                    </td>
-                    <td class="members-list-wish-submitted">
-                        {% get_wishlist_existence current_group user %}
-                    </td>
-                    <td class="members-list-wish-actions">
-                        {% if user.id != user.id or user.responsible_by == current_user or leader %}
+                        <td class="members-list-name">
+                            {{ user.first_name }} {{ user.last_name }}
+                        </td>
+                        <td class="members-list-wish-submitted">
+                            {% get_wishlist_existence current_group user %}
+                        </td>
+                        <td class="members-list-actions">
                             <span>
                                 {% if current_group.leader == user %}
-                                    Group Leader
+                                    Group leader
                                 {% else %}
-                                    <a href="{% url 'remove_group_member' current_group.id user.id %}"> 
-                                        - Remove
-                                    </a>
+                                {% if not current_group.closed %}
+                                    {% if user.id != user.id or user.responsible_by == current_user or leader %}
+                                        <a href="{% url 'remove_group_member' current_group.id user.id %}"> 
+                                            - Remove
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
-                            </span>
-                        {% endif %}
-                    </td>
-                </tr> 
-            {% endfor %}
+                                <span>
+                                    {% if current_group.leader == user %}
+                                        Group Leader
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr> 
+                {% endfor %}
+                <tr class="list-empty-bottom">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
 
-            <tr class="list-empty-bottom">
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
+        {% else %}
+            <table class="list">
+                <tr class="list-top">
+                    <td class="members-list-name-user">
+                        Name
+                    </td>
+                    <td class="members-list-wish-submitted">
+                        List Submitted
+                    </td>
+                    <td class="members-list-actions">
+                    </td>
+                </tr>
+
+                {% for user in object_list %}
+                    <tr class="list-entry {% if current_group.leader == user %}list-entry-important{% endif %}">
+                        <td class="members-list-name-user">
+                            {{ user.first_name }} {{ user.last_name }}
+                        </td>
+                        <td class="members-list-wish-submitted">
+                            {% get_wishlist_existence current_group user %}
+                        </td>
+                        <td class="members-list-actions">
+                            <span>
+                                {% if current_group.leader == user %}
+                                    Group leader
+                                {% else %}
+                                {% if not current_group.closed %}
+                                    {% if user.id != user.id or user.responsible_by == current_user%}
+                                        <a href="{% url 'remove_group_member' current_group.id user.id %}"> 
+                                            - Remove
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                                <span>
+                                    {% if current_group.leader == user %}
+                                        Group Leader
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr> 
+                {% endfor %}
+
+                <tr class="list-empty-bottom">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        {% endif %}
     </div>
 
-    {% if leader %}
+    {% if leader and not current_group.closed %}
         <a name="invite"></a>
         <table class="list">
             <tr class="list-bottom">
@@ -123,7 +189,7 @@
                 </form>
             </tr>
         </table>
-        {% if invitation %}
+        {% if invitation and not current_group.closed %}
             <div class="list-container-2">
                 <div class="list-title plain-title">
                     Invited users
@@ -161,9 +227,8 @@
         {% endif %}
     {% endif %}
 
-    <hr class="list-page-divider">
-
-    {% if current_user.is_self_responsible %}
+    {% if current_user.is_self_responsible and not current_group.closed %}
+        <hr class="list-page-divider">
         <a name="add-member"></a>
         <div class="noted-list">
             <div class="list-title plain-title">

@@ -3,12 +3,12 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import (
     AuthenticationForm,
-    PasswordResetForm,
     SetPasswordForm,
     UserCreationForm, 
     UserChangeForm,
 )
-from .models import CustomUser
+from .models import CustomUser, Notification
+from groups.models import CustomGroup
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -148,3 +148,30 @@ class CustomUserActivationForm(forms.ModelForm):
 
         if password1 != password2:
             raise ValidationError('The two passwords do not match')
+
+class NotificationAdminForm(forms.ModelForm):
+    user = forms.ModelChoiceField(
+        queryset=CustomUser.objects.all(), 
+        required=True)
+    INVITATION = 'INV'
+    OTHER = 'ETC'
+    type_choices = [
+        (INVITATION, 'Invitation'),
+        (OTHER, 'Other'),
+    ]
+    type = forms.ChoiceField(
+        choices=type_choices,
+        required=True
+    )
+    group = forms.ModelChoiceField(
+        queryset=CustomGroup.objects.all(),
+        required=False,
+    )
+    content = forms.Textarea()
+    read = forms.BooleanField(
+        required=False
+    )
+
+    class Meta:
+        model = Notification
+        exclude = []

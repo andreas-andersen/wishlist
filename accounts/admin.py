@@ -3,8 +3,9 @@ from django.contrib.auth.admin import UserAdmin
 from .forms import (
     CustomUserCreationForm, 
     CustomUserChangeForm,
+    NotificationAdminForm,
 )
-from .models import CustomUser
+from .models import CustomUser, Notification
 
 
 class CustomUserAdmin(UserAdmin):
@@ -35,5 +36,11 @@ class CustomUserAdmin(UserAdmin):
         }),
     )
 
+class NotificationAdmin(admin.ModelAdmin):
+    form = NotificationAdminForm
+    model = Notification
+    list_display = ['user', 'content', 'read']
+
 
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Notification, NotificationAdmin)

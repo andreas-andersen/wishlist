@@ -1,7 +1,9 @@
 import hashlib
+from django.apps import apps
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
+from django.db.models.fields import EmailField
 
 
 class CustomUserManager(BaseUserManager):
@@ -87,6 +89,17 @@ class CustomUser(AbstractUser):
 
         return f'http://www.gravatar.com/avatar/{digest}?s={SIZE}&d={DEFAULT}'
 
+    def get_email_30char(self):
+        if len(self.email) > 30:
+            output = self.email[:29] + '...'
+        else: 
+            output = self.email
+        return output
+
+    def get_notifications(self):
+        notifications = Notification.objects.filter(user=self).filter(read=False)
+        return len(notifications)
+
     def check_multi_responsible(self):
         responsibilities = CustomUser.objects.filter(responsible_by=self.pk)
 
@@ -94,3 +107,40 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(
+        'CustomUser',
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE,
+        related_name='user'
+    )
+    INVITATION = 'INV'
+    OTHER = 'ETC'
+    type_choices = [
+        (INVITATION, 'Invitation'),
+        (OTHER, 'Other'),
+    ]
+    type = models.CharField(
+        max_length=3,
+        choices=type_choices,
+        default=OTHER,
+        blank=False
+    )
+    group = models.ForeignKey(
+        'groups.CustomGroup',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='group'
+    )
+    content = models.TextField(
+        blank=True
+    )
+    read = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+    )

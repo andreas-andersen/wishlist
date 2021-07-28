@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
 html {
     height: 100%;
 }
@@ -45,7 +46,7 @@ h3 {
 a {
     color: #EF233C;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .top-container {
@@ -141,8 +142,20 @@ a {
 }
 
 .navbar-item a {
+    display: inline-block;
+    -webkit-transition: .5s linear;
+    -moz-transition: .5s ease-in-out;
+    -o-transition: .5s ease-in-out;
+    transition: .05s linear;
     color: #2B2D42;
-    font-weight: 500;
+    font-weight: 400;
+}
+
+.navbar-item a:hover {
+    -webkit-transform: scale(1.01);
+    -moz-transform: scale(1.01);
+    -o-transform: scale(1.01);
+    transform: scale(1.05);
 }
 
 .login {
@@ -175,25 +188,17 @@ a {
     flex-grow: 1;
 }
 
-.login-text-gravatar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.25em;
-}
-
 #gravatar {
     border-radius: 50%;
-    height: 30px;
-    width: 30px;
+    height: 2.5em;
+    width: 2.5em;
 }
 
 #anonymous-icon {
     border: 0.15em solid #2B2D42;
     border-radius: 50%;
-    height: 30px;
-    width: 30px;
+    height: 2.5em;
+    width: 2.5em;
     color: #2B2D42;
     text-align: center;
 }
@@ -202,6 +207,23 @@ a {
     position: relative;
     float: right;
     z-index: 3;
+}
+
+.notifications-counter {
+    position: absolute;
+    left: 2em;
+    top: -0.4em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0.2em solid black;
+    border-radius: 30%;
+    height: 0.9em;
+    color: #D90429;
+    background-color: white;
+    font-size: 0.75em;
+    font-weight: 800;
+    padding: 0.05em 0.1em 0.1em 0.1em;
 }
 
 .dropdown-button {
@@ -238,12 +260,16 @@ a {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 0.25em 0 0.25em 0;
+    margin: 0 0 1em 0;
     font-size: 1em;
 }
 
+.dropdown-element:first-child {
+    margin: 1em 0 1em 0;
+}
+
 .dropdown-element:last-child {
-    padding: 1em 0 0 0;
+    margin: 0 0 0 0;
 }
 
 .dropdown-icon {
@@ -430,7 +456,86 @@ i {
     display: flex;
     flex-direction: column;
     text-align: left;
+}
+
+.info-page-notifications {
+    width: 100%;
+    max-height: 20em;
+    overflow: auto;
+    background-color: whitesmoke;
+    border-radius: 0.4em;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    margin: 0.5em 0 0 0;
+    padding: 0.4em 0 0.4em 0;
+}
+
+.info-page-notification-entry {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    height: 4.5em;
     background-color: white;
+    margin: 0.4em 0 0 0;
+    padding: 0.5em 2em;
+}
+
+.info-page-notification-entry:first-child {
+    margin: 0em;
+}
+
+.info-page-notification-content {
+    width: 100%;
+}
+
+.read {
+    color: lightgray;
+}
+
+.info-page-notification-action {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 10em;
+    
+}
+
+.info-page-notification-action a {
+    color: black;
+}
+
+.choice-icon-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    font-weight: 400;
+}
+
+.yes-icon {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 1.4em;
+    height: 1.4em;
+    color: green;
+    font-size: 1em;
+    margin: 0 0.5em 0 0;
+}
+
+.no-icon {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 1.4em;
+    height: 1.4em;
+    color: red;
+    font-size: 0.8em;
+    margin: 0 0.5em 0 0;
 }
 
 .list {
@@ -674,7 +779,7 @@ tr.list-entry-important td {
 }
 
 .create-member-actions {
-    width: 15%;
+    width: 9em;
     text-align: center;
     padding: 0.5em;
 }
@@ -738,22 +843,31 @@ tr.list-entry-important td {
 }
 
 .members-list-email {
-    width: 25%;
+    width: 35%;
     text-align: left;
     padding: 0.5em 2em;
 }
 
 .members-list-name {
-    width: 35%;
+    width: 50%;
     text-align: center;
     padding: 0.5em 2em;
 }
 
-.members-list-wish-submitted, 
-.members-list-actions {
+.members-list-name-user {
+    width: 85%;
+    text-align: center;
+    padding: 0.5em 2em;
+}
+
+.members-list-wish-submitted {
     width: 15%;
     text-align: center;
     padding: 0.5em;
+}
+
+.members-list-actions {
+    min-width: 9em;
 }
 
 .members-list-invited-email {

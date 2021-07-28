@@ -4,7 +4,7 @@ from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from .models import CustomUser
+from .models import CustomUser, Notification
 from groups.models import CustomGroup, Assignments
 from wishlist.models import Wish
 from django.contrib.auth.mixins import (
@@ -63,7 +63,7 @@ class CustomUserPasswordChangeView(
 
 @login_required
 def my_wish_lists_view(request, user_id):
-    if user_id == request.user:
+    if user_id == request.user.id:
         current_user = CustomUser.objects.get(id=user_id)
         current_groups = CustomGroup.objects.filter(user=current_user)
         data = [
@@ -133,3 +133,34 @@ def complete_user_activation(request, user_id):
     else:
         return HttpResponseForbidden() 
 
+
+@login_required
+def notification_center_view(request, user_id):
+    current_user = CustomUser.objects.get(id=user_id)
+
+    if user_id == request.user.id:
+        user_notifications = Notification.objects.filter(user=current_user)
+
+        return render(
+            request, 'user/notifications.html', 
+            {'notifications': user_notifications, 'user_id': user_id})
+
+    else:
+        return HttpResponseForbidden()
+
+
+@login_required
+def mark_all_as_read_view(request, user_id):
+    current_user = CustomUser.objects.get(id=user_id)
+
+    if user_id == request.user.id:
+        unread_notifications = (
+            Notification.objects.filter(user=current_user).filter(read=False).exclude(type='INV'))
+        for notification in unread_notifications:
+            notification.read = True
+            notification.save()
+
+        return redirect('notifications', user_id)
+
+    else:
+        return HttpResponseForbidden()
