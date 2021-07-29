@@ -8,6 +8,7 @@ django = ">3"
 django-tables2 = "*"
 django-utils-six = "*"
 six = "*"
+psycopg2 = "*"
 
 [dev-packages]
 

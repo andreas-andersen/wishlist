@@ -23,7 +23,7 @@
         {% endif %}
     </div>
 
-    {% if user.is_leader %}
+    {% if object_list %}
         <table class="list">
             <tr class="list-top">
                 <td class="groups-list-name">
@@ -36,37 +36,37 @@
                     Deadline
                 </td>
                 <td class="groups-list-actions">
-                    Actions
                 </td>
             </tr>
+
         
             {% for group in object_list %}
-                {% if not group.closed %}
-                    <tr class="list-entry">
-                        <td class="groups-list-name">
-                            <a href="{% url 'group_members' group.pk %}" class="list-item-title">
-                                {{ group.name }}
-                            </a>
-                        </td>
-                        <td class="groups-list-leader">
-                            {{ group.leader.first_name }} {{ group.leader.last_name }}
-                        </td>
-                        <td class="groups-list-deadline">
-                            {% if group.closed %}
-                                CLOSED
-                            {% else %}
-                                {{ group.deadline }}
-                            {% endif %}
-                        </td>
-                        <td class="groups-list-actions">
+                <tr class="list-entry {% if group.closed %}read{% endif %}">
+                    <td class="groups-list-name">
+                        <a href="{% url 'group_members' group.pk %}" class="list-item-title">
+                            {{ group.name }}
+                        </a>
+                    </td>
+                    <td class="groups-list-leader">
+                        {{ group.leader.first_name }} {{ group.leader.last_name }}
+                    </td>
+                    <td class="groups-list-deadline">
+                        {% if group.closed %}
+                            CLOSED
+                        {% else %}
+                            {{ group.deadline }}
+                        {% endif %}
+                    </td>
+                    <td class="groups-list-actions">
+                        {% if group.leader == user %}
                             <a href="{% url 'delete_group' group.id %}">
                                 - Delete
                             </a>
-                        </td>
-                    </tr>
-                {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
             {% empty %}
-                <p>No active groups found</p>
+                <tr><td>No active groups found</td></tr>
             {% endfor %}
             <tr class="list-empty-bottom">
                 <td></td>
@@ -76,45 +76,7 @@
             </tr>
         </table>
     {% else %}
-        <table class="list">
-            <tr class="list-top">
-                <td class="groups-list-name">
-                    Group Name
-                </td>
-                <td class="groups-list-leader">
-                    Leader
-                </td>
-                <td class="groups-list-deadline">
-                    Deadline
-                </td>
-            </tr>
-        
-            {% for group in object_list %}
-                {% if not group.closed %}
-                    <tr class="list-entry">
-                        <td class="groups-list-name">
-                            <a href="{% url 'group_members' group.pk %}" class="list-item-title">
-                                {{ group.name }}
-                            </a>
-                        </td>
-                        <td class="groups-list-leader">
-                            {{ group.leader.first_name }} {{ group.leader.last_name }}
-                        </td>
-                        <td class="groups-list-deadline">
-                            {{ group.deadline }}
-                        </td>
-                    </tr>
-                {% endif %}
-            {% empty %}
-                <p>No active groups found</p>
-            {% endfor %}
-            <tr class="list-empty-bottom">
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
+        <p>No groups found</p>
     {% endif %}
 
 {% endblock content %}

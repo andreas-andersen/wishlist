@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="back">
+        <a href="{% url 'notifications' user.id %}"><i class="fi-rr-angle-double-left"></i></a>
+    </div>
+
+    <div class="page-title">
+        <div>Notifications history</div>
+    </div>
+
+    <div class="notifications-history-container">
+        <div class="info-page">
+            <div class="info-page-notifications">
+                {% for notification in page_obj %}
+                    <div class="info-page-notification-entry {% if notification.read %}read{% endif %}">
+                        <div class="info-page-notification-gravatar">
+                            <img src="{{ notification.context_user.get_gravatar }}" id="gravatar">
+                        </div>
+                        <div class="info-page-notification-content">
+                            <div class="info-page-notification-content-text">
+                                {{ notification.content|safe }} 
+                            </div>
+                            <div class="info-page-notification-content-datetime">
+                                {{ notification.created }}
+                            </div>
+                        </div>
+                        {% if notification.type == 'INV' and not notification.read %}
+                            <div class="info-page-notification-action">
+                                <a href="{% url 'accept_notification_invitation' notification.group.id user.id notification.id %}">
+                                    <div class="choice-icon-container">
+                                        <span class="yes-icon"><i class="fi-rr-check"></i></span>
+                                        <span>Join</span>
+                                    </div>
+                                </a>
+                                <a href="{% url 'decline_notification_invitation' notification.group.id user.id notification.id %}">
+                                    <div class="choice-icon-container">
+                                        <div class="no-icon"><i class="fi-rr-cross"></i></div> Decline
+                                    </div>
+                                </a>
+                            </div>
+                        {% elif notification.type != 'INV' and not notification.read %}
+                            <div class="info-page-notification-action">
+                                <a href="{% url 'mark_as_read' user.id notification.id %}">
+                                    <div class="accept-icon-container">
+                                        <i class="fi-rr-cross-circle"></i></span>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <span class="pagination-item">
+                        <a href="?page=1">&laquo; first</a> |
+                        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                    </span>
+                {% endif %}
+
+                <span class="pagination-item">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <span class="pagination-item">
+                        <a href="?page={{ page_obj.next_page_number }}">next</a> |
+                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                    </span>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+{% endblock %}

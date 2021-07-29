@@ -34,13 +34,13 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractUser):
     username = None
-    groups = models.ManyToManyField(
-        'groups.CustomGroup',
-        verbose_name='groups',
-        blank=True,
-        related_name="user_set",
-        related_query_name="user",
-    )
+    #groups = models.ManyToManyField(
+    #    'groups.CustomGroup',
+    #    verbose_name='groups',
+    #    blank=True,
+    #    related_name="user_set",
+    #    related_query_name="user",
+    #)
     email = models.EmailField(
         'email address',
         blank=False,
@@ -136,6 +136,13 @@ class Notification(models.Model):
         on_delete=models.CASCADE,
         related_name='group'
     )
+    context_user = models.ForeignKey(
+        'CustomUser',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='context_user'
+    )
     content = models.TextField(
         blank=True
     )
@@ -144,3 +151,4 @@ class Notification(models.Model):
         blank=False,
         default=False,
     )
+    created = models.DateTimeField(auto_now_add=True)

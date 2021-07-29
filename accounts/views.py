@@ -1,4 +1,3 @@
-from django.views.generic.detail import DetailView
 from django.urls import reverse_lazy
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect, render
@@ -11,17 +10,19 @@ from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     UserPassesTestMixin,
 )
-from django.views.generic import (
-    ListView, 
-    CreateView,
-)
-from django.contrib.auth.views import LoginView, PasswordChangeView
 from .forms import (
     CustomUserActivationForm,
     CustomUserLoginForm,
     CustomUserPasswordChangeForm,
     CustomUserSignupForm,
 )
+from django.views.generic import (
+    ListView, 
+    CreateView,
+)
+from django.views.generic.detail import DetailView
+from django.contrib.auth.views import LoginView, PasswordChangeView
+
 
 class CustomUserSignupView(CreateView):
     form_class = CustomUserSignupForm
@@ -135,19 +136,36 @@ def complete_user_activation(request, user_id):
 
 
 @login_required
-def notification_center_view(request, user_id):
+def notifications_center_view(request, user_id):
     current_user = CustomUser.objects.get(id=user_id)
 
     if user_id == request.user.id:
-        user_notifications = Notification.objects.filter(user=current_user)
+        unread_notifications = (
+            Notification.objects.filter(user=current_user).filter(read=False))
+        recent_notifications = (
+            Notification.objects.filter(user=current_user).filter(read=True))[:10]
+        user_notifications = unread_notifications.union(recent_notifications).order_by('-created')
 
         return render(
             request, 'user/notifications.html', 
-            {'notifications': user_notifications, 'user_id': user_id})
+            {
+                'notifications': user_notifications,
+                'user_id': user_id
+            })
 
     else:
         return HttpResponseForbidden()
 
+@login_required
+def mark_as_read_view(request, user_id, notification_id):
+    current_user = CustomUser.objects.get(id=user_id)
+    current_notification = Notification.objects.get(id=notification_id)
+
+    if user_id == request.user.id and current_notification.user == current_user:
+        current_notification.read = True
+        current_notification.save()
+
+        return redirect('notifications', user_id)
 
 @login_required
 def mark_all_as_read_view(request, user_id):
@@ -164,3 +182,18 @@ def mark_all_as_read_view(request, user_id):
 
     else:
         return HttpResponseForbidden()
+
+class NotificationsHistoryView(
+        LoginRequiredMixin,
+        UserPassesTestMixin,
+        ListView
+):
+    model = Notification
+    template_name = 'user/notifications_history.html'
+    paginate_by = 10
+    
+    def get_queryset(self):
+        return Notification.objects.filter(user=self.request.user).filter(read=True).order_by('-created')
+
+    def test_func(self):
+        return self.kwargs['user_id'] == self.request.user.id

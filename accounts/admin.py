@@ -30,6 +30,7 @@ class CustomUserAdmin(UserAdmin):
             'classes': ('wide',),
             'fields': (
                 'email', 'password1', 'password2', 
+                'first_name', 'last_name',
                 'assigned_to', 'responsible_by',
                 'is_leader', 'is_self_responsible',
             )

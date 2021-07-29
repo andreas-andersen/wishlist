@@ -3,11 +3,7 @@
 {% block content %}
     
     <div class="back">
-        {% if user.check_multi_responsible %}
-            <a href="{% url 'my_lists' user.id %}"><i class="fi-rr-angle-double-left"></i></a>
-        {% else %}
-            <a href="{% url 'wish_list' user.id %}"><i class="fi-rr-angle-double-left"></i></a>
-        {% endif %}
+        <a href="{% url 'my_lists' user.id %}"><i class="fi-rr-angle-double-left"></i></a>
     </div>
     
     <div class="page-title">

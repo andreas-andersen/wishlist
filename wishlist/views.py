@@ -53,7 +53,10 @@ class WishCreateView(
         return responsible_author == self.request.user
 
 class WishDetailedCreateView(
-        LoginRequiredMixin, UserPassesTestMixin, CreateView):
+        LoginRequiredMixin, 
+        UserPassesTestMixin, 
+        CreateView
+    ):
     model = Wish
     form_class = WishDetailedCreateForm
     context_object_name = 'wish'
@@ -70,9 +73,9 @@ class WishDetailedCreateView(
             kwargs={'group_id': self.kwargs['group_id'], 'pk': self.kwargs['pk']})
 
     def test_func(self):
-        wish_author = self.get_object().author
+        wish_author = CustomUser.objects.get(id=self.kwargs['pk'])
         responsible_author = wish_author.responsible_by
-        return responsible_author == self.request.user
+        return responsible_author.id == self.request.user.id
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)

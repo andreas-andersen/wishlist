@@ -167,6 +167,10 @@ class NotificationAdminForm(forms.ModelForm):
         queryset=CustomGroup.objects.all(),
         required=False,
     )
+    context_user = forms.ModelChoiceField(
+        queryset=CustomUser.objects.all(),
+        required=False,
+    )
     content = forms.Textarea()
     read = forms.BooleanField(
         required=False

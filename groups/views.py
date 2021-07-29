@@ -69,19 +69,21 @@ class MyGroupsListView(LoginRequiredMixin, ListView,):
     template_name = 'group/my_groups.html'
 
     def get_queryset(self):
-        return CustomGroup.objects.filter(user = self.request.user)
+        return CustomGroup.objects.filter(user=self.request.user)
 
 class GroupMembersListView(
-    LoginRequiredMixin, 
-    UserPassesTestMixin, 
-    ListView,):
+        LoginRequiredMixin, 
+        UserPassesTestMixin, 
+        ListView,
+):
     model = CustomUser
     context_object_name = 'group_members'
     template_name = 'group/members.html'
 
     def get_queryset(self):
         group = CustomGroup.objects.get(id=self.kwargs['pk'])
-        return group.user_set.all()
+        group_leader = group.leader
+        return group.user_set.all().exclude(id=group_leader.id).order_by('date_joined')
 
     def get_context_data(self, **kwargs):
         data = super(GroupMembersListView, self).get_context_data(**kwargs)
@@ -135,6 +137,7 @@ def group_member_invite_view(request, group_id, user_id):
                             user=existing_user,
                             type='INV',
                             group=current_group,
+                            context_user=current_user,
                             content=(
                                 f'You have received an invitaion from <b>{current_user.first_name} '
                                 f'{current_user.last_name}</b> to join to group <b>{current_group.name}</b>!')
@@ -219,9 +222,10 @@ def accept_notification_invitation_view(request, group_id, user_id, notification
         new_notification = Notification(
             user=current_group.leader,
             type='ETC',
+            context_user=current_user,
             content=(
-                f'<b>{current_user.first_name} {current_user.last_name}</b> has ' 
-                f'accepted your invitation to join <b>{current_group.name}</b>!')
+                f'<b>{current_user.first_name} {current_user.last_name}</b> has accepted your invitation to join ' 
+                f'''<a href="{reverse('group_members', kwargs={'pk': group_id})}">{current_group.name}</a>!''')
         )
         new_notification.save()
         
@@ -247,9 +251,10 @@ def decline_notification_invitation_view(request, group_id, user_id, notificatio
         new_notification = Notification(
             user=current_group.leader,
             type='ETC',
+            context_user=current_user,
             content=(
-                f'<b>{current_user.first_name} {current_user.last_name}</b> has ' 
-                f'declined your invitation to join <b>{current_group.name}</b>.')
+                f'<b>{current_user.first_name} {current_user.last_name}</b> has declined your invitation to join ' 
+                f'''<a href="{reverse('group_members', kwargs={'pk': group_id})}">{current_group.name}</a>''')
         )
         new_notification.save()
         
@@ -282,6 +287,18 @@ def group_member_create_view(request, group_id, user_id):
                 new_user.save()
                 current_group.user_set.add(new_user)
 
+                if current_user != current_group.leader:
+                    new_notification = Notification(
+                        user=current_group.leader,
+                        type='ETC',
+                        context_user=new_user,
+                        content=(
+                            f'<b>{new_user.first_name} {new_user.last_name}</b> has been added by '
+                            f'<b>{current_user.first_name} {current_user.last_name}</b> to the group ' 
+                            f'''<a href="{reverse('group_members', kwargs={'pk': group_id})}">{current_group.name}</a>!''')
+                    )
+                    new_notification.save()
+
                 messages.success(request, f'User successfully added!', extra_tags='create')
                 return redirect('group_members', group_id)
             
@@ -299,7 +316,7 @@ def remove_user_from_group(request, group_id, user_id):
     current_group = CustomGroup.objects.get(id=group_id)
     current_user = CustomUser.objects.get(id=user_id)
     if ((current_group.leader == request.user or 
-            current_user.is_responsible == request.user) and not
+            current_user.responsible_by == request.user) and not
                 current_group.closed):
         current_group.user_set.remove(current_user)
         return redirect('group_members', group_id)
@@ -364,6 +381,22 @@ def assign(request, group_id):
             )
             new_assignment.save()
             new_assignments.assignments.add(new_assignment)
+
+            responsible_user = assignment.responsible_by,
+            new_notification = Notification(
+                user=responsible_user,
+                type='ETC',
+                context_user=member,
+                content=(
+                    f'<b>{member.first_name} {member.last_name}</b> has been assigned to you in the group ' 
+                    f'''<a href="{reverse('group_members', kwargs={'pk': group_id})}">{current_group.name}</a>!'''
+                    f'''<br>Check out the <a href="{reverse('received_lists', kwargs={'user_id': responsible_user.id})}">'''
+                    f'Received Lists</a> page for details!')
+            )
+            new_notification.save()
+        
+        current_group.closed = True
+        current_group.save()
 
         return redirect('group_members', group_id)
 

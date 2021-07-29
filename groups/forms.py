@@ -137,10 +137,25 @@ class GroupCreateForm(forms.ModelForm):
                 'placeholder': 'DD/MM/YYYY',
                 'class': 'form-page-input',
                 'autocomplete': 'off'}))
+    MANUAL = 'M'
+    USERWISE_RANDOM = 'U'
+    RANDOM = 'R'
+    assignment_rule_choices = [
+        (MANUAL, 'Manual'),
+        (USERWISE_RANDOM, 'User-wise random'),
+        (RANDOM, 'Random'),
+    ]
+    assignment_rule = forms.ChoiceField(
+        choices=assignment_rule_choices,
+        required=True,
+        widget=forms.RadioSelect(
+            attrs={
+                'class': 'form-page-input'})
+    )
 
     class Meta:
         model = CustomGroup
-        fields = ['name', 'max_gift_value', 'currency', 'deadline',]
+        fields = ['name', 'max_gift_value', 'currency', 'deadline', 'assignment_rule']
 
 
 class GroupMemberCreateForm(forms.Form):
@@ -172,7 +187,7 @@ class GroupMemberInviteForm(forms.Form):
 class ManualAssignmentForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.current_group = kwargs.pop('group')
-        self.group_members = self.current_group.user_set.all()
+        self.group_members = self.current_group.user_set.all().order_by('date_joined')
         self.selector_choices = [(user.id, user.first_name + ' ' + user.last_name) for user in self.group_members]
         self.selector_choices.insert(0, ('', 'Assigned to'))
         super(ManualAssignmentForm, self).__init__(*args, **kwargs)

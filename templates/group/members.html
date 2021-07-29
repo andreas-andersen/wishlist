@@ -17,17 +17,17 @@
                 <span></span>
                 <span></span>
                 <div id="burger-menu-id" class="burger-menu">
-                    <a href="#invite" class="burger-element">
-                        <i class="fi-rr-paper-plane dropdown-icon"></i>Invite user
-                    </a>
-                    <a href="#add-member" class="burger-element">
-                        <i class="fi-rr-users dropdown-icon"></i>Add member
-                    </a>
                     {% if leader %}
                         <a href="{% url 'manual_assignment' current_group.id %}" class="burger-element">
                             <i class="fi-rr-shuffle dropdown-icon"></i>Shuffle / Assignment
                         </a>
+                        <a href="#invite" class="burger-element">
+                            <i class="fi-rr-paper-plane dropdown-icon"></i>Invite user
+                        </a>
                     {% endif %}
+                    <a href="#add-member" class="burger-element">
+                        <i class="fi-rr-users dropdown-icon"></i>Add member
+                    </a>
                 </div>
             </div>
         {% endif %}
@@ -66,6 +66,24 @@
                     <td class="members-list-actions">
                     </td>
                 </tr>
+                <tr class="list-entry {% if current_group.leader == user %}list-entry-important{% endif %}">
+                    <td class="members-list-email">
+                        <a href="" class = "item-title">
+                            {{ current_group.leader.get_email_30char }}
+                        </a>
+                    </td>
+                    <td class="members-list-name">
+                        {{ current_group.leader.first_name }} {{ current_group.leader.last_name }}
+                    </td>
+                    <td class="members-list-wish-submitted">
+                        {% get_wishlist_existence current_group current_group.leader %}
+                    </td>
+                    <td class="members-list-actions">
+                        <span>
+                            Group leader
+                        </span>
+                    </td>
+                </tr>
                 {% for user in object_list %}
                     <tr class="list-entry {% if current_group.leader == user %}list-entry-important{% endif %}">
                         <td class="members-list-email">
@@ -83,9 +101,6 @@
                         </td>
                         <td class="members-list-actions">
                             <span>
-                                {% if current_group.leader == user %}
-                                    Group leader
-                                {% else %}
                                 {% if not current_group.closed %}
                                     {% if user.id != user.id or user.responsible_by == current_user or leader %}
                                         <a href="{% url 'remove_group_member' current_group.id user.id %}"> 
@@ -93,12 +108,7 @@
                                         </a>
                                     {% endif %}
                                 {% endif %}
-                                <span>
-                                    {% if current_group.leader == user %}
-                                        Group Leader
-                                    {% endif %}
-                                </span>
-                            {% endif %}
+                            </span>
                         </td>
                     </tr> 
                 {% endfor %}
@@ -122,7 +132,19 @@
                     <td class="members-list-actions">
                     </td>
                 </tr>
-
+                <tr class="list-entry {% if current_group.leader == user %}list-entry-important{% endif %}">
+                    <td class="members-list-name">
+                        {{ current_group.leader.first_name }} {{ current_group.leader.last_name }}
+                    </td>
+                    <td class="members-list-wish-submitted">
+                        {% get_wishlist_existence current_group current_group.leader %}
+                    </td>
+                    <td class="members-list-actions">
+                        <span>
+                            Group leader
+                        </span>
+                    </td>
+                </tr>
                 {% for user in object_list %}
                     <tr class="list-entry {% if current_group.leader == user %}list-entry-important{% endif %}">
                         <td class="members-list-name-user">
@@ -133,9 +155,6 @@
                         </td>
                         <td class="members-list-actions">
                             <span>
-                                {% if current_group.leader == user %}
-                                    Group leader
-                                {% else %}
                                 {% if not current_group.closed %}
                                     {% if user.id != user.id or user.responsible_by == current_user%}
                                         <a href="{% url 'remove_group_member' current_group.id user.id %}"> 
@@ -143,12 +162,7 @@
                                         </a>
                                     {% endif %}
                                 {% endif %}
-                                <span>
-                                    {% if current_group.leader == user %}
-                                        Group Leader
-                                    {% endif %}
-                                </span>
-                            {% endif %}
+                            </span>
                         </td>
                     </tr> 
                 {% endfor %}
@@ -223,7 +237,6 @@
                     </tr>
                 </table>
             </div>
-        {% else %}
         {% endif %}
     {% endif %}
 
