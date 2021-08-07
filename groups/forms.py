@@ -1,3 +1,4 @@
+from itertools import count
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from accounts.models import CustomUser
@@ -137,25 +138,10 @@ class GroupCreateForm(forms.ModelForm):
                 'placeholder': 'DD/MM/YYYY',
                 'class': 'form-page-input',
                 'autocomplete': 'off'}))
-    MANUAL = 'M'
-    USERWISE_RANDOM = 'U'
-    RANDOM = 'R'
-    assignment_rule_choices = [
-        (MANUAL, 'Manual'),
-        (USERWISE_RANDOM, 'User-wise random'),
-        (RANDOM, 'Random'),
-    ]
-    assignment_rule = forms.ChoiceField(
-        choices=assignment_rule_choices,
-        required=True,
-        widget=forms.RadioSelect(
-            attrs={
-                'class': 'form-page-input'})
-    )
 
     class Meta:
         model = CustomGroup
-        fields = ['name', 'max_gift_value', 'currency', 'deadline', 'assignment_rule']
+        fields = ['name', 'max_gift_value', 'currency', 'deadline']
 
 
 class GroupMemberCreateForm(forms.Form):
@@ -184,25 +170,63 @@ class GroupMemberInviteForm(forms.Form):
                 'class': 'in-page-input'}))
 
 
-class ManualAssignmentForm(forms.Form):
+class SelectAssignmentForm(forms.Form):
+    MANUAL = 'M'
+    USERWISE_RANDOM = 'U'
+    RANDOM = 'R'
+    assignment_rule_choices = [
+        (MANUAL, 'Manual'),
+        (USERWISE_RANDOM, 'User-wise random'),
+        (RANDOM, 'Random'),
+    ]
+    assignment_rule = forms.ChoiceField(
+        choices=assignment_rule_choices,
+        required=True,
+        widget=forms.RadioSelect(
+            attrs={
+                'class': 'form-page-input'})
+    )
+
+
+class AssignmentForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.current_group = kwargs.pop('group')
-        self.group_members = self.current_group.user_set.all().order_by('date_joined')
+        self.group_members = self.current_group.user_set.all()
         self.selector_choices = [(user.id, user.first_name + ' ' + user.last_name) for user in self.group_members]
-        self.selector_choices.insert(0, ('', 'Assigned to'))
-        super(ManualAssignmentForm, self).__init__(*args, **kwargs)
+        if 'assignments' in kwargs:
+            self.current_assignments = kwargs.pop('assignments')
+            self.current_assignments_choices = zip(count(), self.group_members, self.current_assignments)
+        else:
+            self.selector_choices.insert(0, ('', 'Assigned to'))
+            self.current_assignments = 0
+        super(AssignmentForm, self).__init__(*args, **kwargs)
 
-        for i, member in enumerate(self.group_members):
-            field_name = f'assignment_{member.id}'
-            current_selection = self.selector_choices.copy()
-            current_selection.pop(i+1)
-            self.fields[field_name] = forms.ChoiceField(
-                label=f'{member.first_name} {member.last_name}',
-                choices=current_selection,
-                required=True,
-                widget=forms.Select(
-                    attrs={
-                        'class': 'form-page-input'}))
+        if self.current_assignments:
+            for i, member, assignment in (self.current_assignments_choices):
+                field_name = f'assignment_{member.id}'
+                current_selection = self.selector_choices.copy()
+                current_selection.remove((member.id, member.first_name + ' ' + member.last_name))
+                current_selection.remove((assignment.id, assignment.first_name + ' ' + assignment.last_name))
+                current_selection.insert(0, (assignment.id, assignment.first_name + ' ' + assignment.last_name))
+                self.fields[field_name] = forms.ChoiceField(
+                    label=f'{member.first_name} {member.last_name}',
+                    choices=current_selection,
+                    required=True,
+                    widget=forms.Select(
+                        attrs={
+                            'class': 'form-page-input'}))
+        else:
+            for i, member in enumerate(self.group_members):
+                field_name = f'assignment_{member.id}'
+                current_selection = self.selector_choices.copy()
+                current_selection.pop(i+1)
+                self.fields[field_name] = forms.ChoiceField(
+                    label=f'{member.first_name} {member.last_name}',
+                    choices=current_selection,
+                    required=True,
+                    widget=forms.Select(
+                        attrs={
+                            'class': 'form-page-input'}))
 
     def clean(self):
         assignments = list()

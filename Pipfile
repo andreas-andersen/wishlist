@@ -9,6 +9,7 @@ django-tables2 = "*"
 django-utils-six = "*"
 six = "*"
 psycopg2 = "*"
+numpy = "*"
 
 [dev-packages]
 

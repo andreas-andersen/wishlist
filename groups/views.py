@@ -1,3 +1,5 @@
+import datetime
+import numpy as np
 from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.http import HttpResponseRedirect, HttpResponse
@@ -10,8 +12,9 @@ from django.urls import reverse
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from accounts.models import CustomUser, Notification
-from wishlist.models import Wish
 from accounts.tokens import invitation_token
+from wishlist.models import Wish
+from .assignments import userwise_assignment, random_assignment
 from .models import (
     CustomGroup, 
     Assignment,
@@ -21,7 +24,8 @@ from .forms import (
     GroupCreateForm,
     GroupMemberCreateForm,
     GroupMemberInviteForm,
-    ManualAssignmentForm,
+    AssignmentForm,
+    SelectAssignmentForm,
 )
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import (
@@ -69,7 +73,7 @@ class MyGroupsListView(LoginRequiredMixin, ListView,):
     template_name = 'group/my_groups.html'
 
     def get_queryset(self):
-        return CustomGroup.objects.filter(user=self.request.user)
+        return CustomGroup.objects.filter(user=self.request.user).order_by('-created')
 
 class GroupMembersListView(
         LoginRequiredMixin, 
@@ -335,14 +339,48 @@ def uninvite_user_from_group(request, group_id, user_id):
 
 
 @login_required
+def select_assignment_view(request, group_id):
+    current_group = CustomGroup.objects.get(id=group_id)
+    if current_group.leader == request.user and not current_group.closed:
+        if request.method == 'POST':
+            form = SelectAssignmentForm(request.POST)
+
+            if form.is_valid():
+                assignment_rule = form.cleaned_data['assignment_rule']
+                current_group.assignment_rule = assignment_rule
+                current_group.save()
+
+                if assignment_rule == 'M':
+                    return redirect('manual_assignment', group_id)
+                elif assignment_rule == 'U':
+                    return redirect('random_assignment', group_id, 1)
+                else:
+                    return redirect('random_assignment', group_id, 0)
+        
+        else:
+            form = SelectAssignmentForm()
+            has_members = len(current_group.user_set.all()) > 1
+            past_deadline = datetime.date.today() > current_group.deadline
+            has_wishlists = all(
+                [len(Wish.objects.filter(author=user).filter(group=current_group)) > 0 
+                    for user in current_group.user_set.all()])
+
+        return render(
+            request, 'group/assignment/select.html', 
+            {
+                'group_id': group_id, 'has_members': has_members,
+                'past_deadline': past_deadline, 'has_wishlists': has_wishlists}
+        )
+
+@login_required
 def manual_assignment_view(request, group_id):
     current_group = CustomGroup.objects.get(id=group_id)
     if current_group.leader == request.user and not current_group.closed:
         if request.method == 'POST':
-            form = ManualAssignmentForm(request.POST, group=current_group)
+            form = AssignmentForm(request.POST, group=current_group)
 
             if form.is_valid():
-                cleaned_data = form.cleaned_data["assignments"]
+                cleaned_data = form.cleaned_data['assignments']
                 assignments = [(key.strip('assignment_'), values) for key, values in cleaned_data]
                 output = [(CustomUser.objects.get(id=key), CustomUser.objects.get(id=value)) 
                     for key, value in assignments]
@@ -353,7 +391,7 @@ def manual_assignment_view(request, group_id):
                     {'output': output, 'group_id': group_id}
                 )
         else:
-            form = ManualAssignmentForm(group=current_group)
+            form = AssignmentForm(group=current_group)
 
         return render(
             request, 'group/assignment/manual.html', 
@@ -362,6 +400,51 @@ def manual_assignment_view(request, group_id):
 
     else:
         return HttpResponseForbidden()
+
+@login_required
+def random_assignment_view(request, group_id, userwise):
+    current_group = CustomGroup.objects.get(id=group_id)
+    if current_group.leader == request.user and not current_group.closed:
+        if request.method == 'POST':
+            form = AssignmentForm(request.POST, group=current_group)
+
+            if form.is_valid():
+                cleaned_data = form.cleaned_data['assignments']
+                assignments = [(key.strip('assignment_'), values) for key, values in cleaned_data]
+                output = [(CustomUser.objects.get(id=key), CustomUser.objects.get(id=value)) 
+                    for key, value in assignments]
+
+                request.session['assignments'] = assignments
+                return render(
+                    request, 'group/assignment/manual_output.html',
+                    {'output': output, 'group_id': group_id}
+                )
+        
+        else:
+            current_users = current_group.user_set.all()
+
+            users = np.array([user.id for user in current_users])
+            responsible = np.array([user.responsible_by.id for user in current_users])
+            assignments = np.zeros(len(users), dtype=np.int32)
+            assigned = np.zeros(len(users), dtype=bool)
+            received_assignments = np.zeros(len(users), dtype=bool)
+
+            assignment_array = np.vstack((users, responsible, assignments, assigned, received_assignments))
+            if userwise == True:
+                assigned_array = userwise_assignment(assignment_array)[2]
+            else:
+                assigned_array = random_assignment(assignment_array)[2]
+            assigned_users = [CustomUser.objects.get(id=user) for user in assigned_array]
+
+            form = AssignmentForm(group=current_group, assignments=assigned_users)
+            return render(
+                request, 'group/assignment/random.html', 
+                {'form': form, 'group_id': group_id, 'userwise': userwise}
+            )
+
+    else:
+        return HttpResponseForbidden()
+
 
 @login_required
 def assign(request, group_id):

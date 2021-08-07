@@ -4,9 +4,10 @@
     <div class="back">
         <a href="{% url 'select_assignment' group_id %}"><i class="fi-rr-angle-double-left"></i></a>
     </div>
-
+    
     <div class="form-page-large">
-        <span class="form-page-title">Manual wish list assignment</span>
+        <span class="form-page-title">
+            {% if userwise %}User-wise random{% else %}Random{% endif %} wish list assignment</span>
         <div class="form-page-assignment-direction">
             Assigned to
             <i class="fi-rr-arrow-small-right"></i>
@@ -23,7 +24,11 @@
                     </span>
                 </div>
             {% endfor %}
-            <div><button class="form-page-submit" type="submit">Control assignments</button></div>
+            <div class="form-double-space">
+                <button onclick="location.href='{% url 'random_assignment' group_id userwise %}'"
+                    class="form-page-redo" type="button">Redo assignment</button>
+                <button class="form-page-submit-half" type="submit">Control assignments</button>
+            </div>
         </form>
     </div>
     

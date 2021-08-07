@@ -10,8 +10,10 @@ from .views import (
     group_member_invite_view,
     group_member_create_view,
     remove_user_from_group,
+    select_assignment_view,
     uninvite_user_from_group,
     manual_assignment_view,
+    random_assignment_view,
     assign,
 )
 
@@ -38,8 +40,12 @@ urlpatterns = [
         accept_notification_invitation_view, name='accept_notification_invitation'),
     path('<int:group_id>/<int:user_id>/<int:notification_id>/decline_invitation/',
         decline_notification_invitation_view, name='decline_notification_invitation'),
+    path('<int:group_id>/assignment/select/',
+        select_assignment_view, name='select_assignment'),
     path('<int:group_id>/assignment/manual/',
         manual_assignment_view, name='manual_assignment'),
+    path('<int:group_id>/<int:userwise>/assignment/random/',
+        random_assignment_view, name='random_assignment'),
     path('<int:group_id>/assignment/assign/',
         assign, name='assign'),
 ]

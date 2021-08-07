@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load tags %}
+
+{% block content %}
+    <div class="back">
+        <a href="{% url 'group_members' group_id %}"><i class="fi-rr-angle-double-left"></i></a>
+    </div>
+
+    <div class="form-page-large">
+        <span class="form-page-title">Select assignment method</span>
+        <div class="form-page-assignment-checklist-container">
+            <div class="form-page-assignment-checklist 
+                {% if has_members and past_deadline and has_wishlists %}{% else %}red-border{% endif %}">
+                <div class="checklist-title">Pre-assignment checklist</div>
+                <div class="checklist-item">
+                    {% if has_members %}
+                        <div><span class="yes-icon"><i class="fi-rr-check"></i></span></div>
+                        <div>The group has members</div>
+                    {% else %}
+                        <div><span class="no-icon"><i class="fi-rr-cross"></i></span></div>
+                        <div><b>The group does not have members</b></div>
+                    {% endif %}
+                </div>
+                <div class="checklist-item">
+                    {% if past_deadline %}
+                        <div><span class="yes-icon"><i class="fi-rr-check"></i></span></div>
+                        <div>It is past deadline</div>
+                    {% else %}
+                        <div><span class="no-icon"><i class="fi-rr-cross"></i></span></div>
+                        <div><b>It is not past deadline</b></div>
+                    {% endif %}
+                </div>
+                <div class="checklist-item">
+                    {% if has_wishlists %}
+                        <div><span class="yes-icon"><i class="fi-rr-check"></i></span></div>
+                        <div>All members have wish lists</div>
+                    {% else %}
+                        <div><span class="no-icon"><i class="fi-rr-cross"></i></span></div>
+                        <div><b>Not all members have filled in their wish lists</b></div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <form class="form-page-form" method="post">{% csrf_token %}
+            <div class="form-page-assignment-choices">
+                <div class="assignment-choice">
+                    <label for="id_assignment_rule_0">
+                        <span>Manual</span>
+                        <input type="radio" name="assignment_rule" value="M" class="form-page-input" id="id_assignment_rule_0" required="">
+                    </label>
+                    <div class="assignment-diagram">
+                        <div class="diagram-row">
+                            <div class="diagram-group">
+                                <div class="diagram-1">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-1s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-1s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-1s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                            </div>
+                            <div class="diagram-group">
+                                <div class="diagram-2">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-2s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-2s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-2s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="diagram-row-center">
+                            <div><i class="fi-rr-arrow-up"></i></div>
+                        </div>
+                        <div class="diagram-row-center">
+                            <div><i class="fi-rr-list-check"></i></div>
+                        </div>
+                    </div>
+                    <div>
+                        Lists are assigned manually.
+                    </div>
+                </div>
+                <div class="assignment-choice">
+                    <label for="id_assignment_rule_1">
+                        <span>User-wise random</span>
+                        <input type="radio" name="assignment_rule" value="U" class="form-page-input" id="id_assignment_rule_1" required="">
+                    </label>
+                    <div class="assignment-diagram">
+                        <div class="diagram-row">
+                            <div class="diagram-group">
+                                <div class="diagram-1">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-1s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-1s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-1s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="diagram-row-center">
+                            <div><i class="fi-rr-arrow-down"></i><i class="fi-rr-dice"></i><i class="fi-rr-arrow-up"></i></div>
+                        </div>
+                        <div class="diagram-row">
+                            <div class="diagram-group">
+                                <div class="diagram-2">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-2s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-2s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-2s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        Lists are not assigned between users added by you. (e.g. family members)
+                    </div>
+                </div>
+                <div class="assignment-choice">
+                    <label for="id_assignment_rule_2">
+                        <span>Full random</span>
+                        <input type="radio" name="assignment_rule" value="R" class="form-page-input" id="id_assignment_rule_2" required="">
+                    </label>
+                    <div class="assignment-diagram">
+                        <div class="diagram-row">
+                            <div class="diagram-group">
+                                <div class="diagram-1">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-2s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-1s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-2s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="diagram-row-center">
+                            <div><i class="fi-rr-arrow-down"></i><i class="fi-rr-dice"></i><i class="fi-rr-arrow-up"></i></div>
+                        </div>
+                        <div class="diagram-row">
+                            <div class="diagram-group">
+                                <div class="diagram-2s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-1s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-2">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                                <div class="diagram-1s">
+                                    <i class="fi-rr-user"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        Lists are assigned randomly.
+                    </div>
+                </div>
+            </div>
+            <div>
+                {% if has_members and past_deadline and has_wishlists %}
+                    <button class="form-page-submit" type="submit">Select</button>
+                {% else %}
+                    <button class="form-page-submit-inactive" disabled>Select</button>
+                {% endif %}
+            </div>
+            <div class="form-page-errors">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

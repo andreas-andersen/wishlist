@@ -510,7 +510,7 @@ i {
 .info-page-notification-action {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     min-width: 10em;
 }
@@ -707,6 +707,14 @@ tr.list-entry-important td {
     margin: 4em 0 0 0;
 }
 
+.form-page-form-container {
+    background-color: whitesmoke;
+    border-radius: 0.5em;
+    border: 0.1em solid #EF233C;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    padding: 2em;
+}
+
 .form-page-title {
     font-size: 2em;
     margin: 0.5em 1em 0.25em 1em;
@@ -718,6 +726,16 @@ tr.list-entry-important td {
     margin: 1em 0 0 0;
     padding: 0 1em 2em 1em;
     text-align: center;
+}
+
+.form-page-assignment-direction {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.5em;
+    width: 7em;
+    margin: 1em auto 0 auto;
 }
 
 .form-double-space {
@@ -793,8 +811,8 @@ tr.list-entry-important td {
 .form-page-assignment-container {
     background-color: whitesmoke;
     border-radius: 0.5em;
-    margin: 2em 0 0 0;
-    padding: 0.5em;
+    margin: 1em 0 0 0;
+    padding: 1em 0.5em 1em 0.5em;
 }
 
 .form-page-assignment-choices {
@@ -803,12 +821,53 @@ tr.list-entry-important td {
     justify-content: space-between;
     align-items: stretch;
     width: 100%;
-    margin: 1em 0 0 0;
 }
 
 .form-page-subtitle {
     font-size: 1.5em;
     margin: 0.5em 0 0 0;
+}
+
+.form-page-assignment-checklist-container {
+    width: 100%;
+    margin: 1.5em 0 0 0;
+}
+
+.form-page-assignment-checklist {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    border-radius: 1em;
+    width: 20em;
+    margin: 1em auto 1.5em auto;
+    padding: 1.5em 2em 2em 2em;
+}
+
+.red-border {
+    border: 0.1em solid #EF233C;
+}
+
+.checklist-title {
+    font-size: 1.5em;
+    text-align: center;
+    margin: 0 0 1em 0;
+}
+
+.checklist-item:last-child {
+    margin: 0 0 0 0;
+}
+
+.checklist-item {
+    display: flex;
+    flex: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0 0 0.5em 0;
+}
+
+.checklist-item div:first-child {
+    width: 20%;
 }
 
 .assignment-choice {
@@ -820,7 +879,7 @@ tr.list-entry-important td {
     background-color: #F7FBFC;
     border-radius: 0.25em;
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
-    padding: 0.8em;
+    padding: 1.5em 0.8em 0.8em 0.8em;
 }
 
 .assignment-diagram {
@@ -886,9 +945,50 @@ tr.list-entry-important td {
     font-family: 'Open Sans', sans-serif;
     font-size: 1em;
     cursor: pointer;
+    background-color: #2B2D42;
+    color: white;
+    border: 0.1em solid gray;
+    border-radius: 0.25em;
+    padding: 0.5em 0;
+    margin: 2em 0 0 0;
+}
+
+.form-page-redo {
+    width: 50%;
+    height: 3em;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    cursor: pointer;
+    background-color: #EF233C;
+    color: white;
+    border: 0.1em solid #D90429;
+    border-radius: 0.25em;
+    padding: 0.5em 0;
+    margin: 2em 0 0 0;
+}
+
+.form-page-submit-half {
+    width: 50%;
+    height: 3em;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    cursor: pointer;
     background-color: #2b2d42;
     color: white;
     border: 0.1em solid gray;
+    border-radius: 0.25em;
+    padding: 0.5em 0;
+    margin: 2em 0 0 0;
+}
+
+.form-page-submit-inactive {
+    width: 100%;
+    height: 3em;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    background-color: whitesmoke;
+    color: gray;
+    border: 0.1em solid whitesmoke;
     border-radius: 0.25em;
     padding: 0.5em 0;
     margin: 2em 0 0 0;
@@ -1078,8 +1178,34 @@ input:focus {
     border: 0.15em solid #2B2D42;
 }
 
-input[type="radio"] {
-    height: 1em;
+label {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+label span {
+    position: absolute;
+    width: 100%;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+input[type="radio"].form-page-input {
+    height: 2em;
+    width: 12em;
+    border-radius: 1em;
+    border: 0.1em solid black;
+    background-color: white;
+    -webkit-appearance: none; /*to disable the default appearance of radio button*/
+    -moz-appearance: none;
+    padding: 0em;
+    margin: 0em;
+}
+
+input[type="radio"].form-page-input:checked {
+    border: 0.2em solid black;
 }
 
 select.in-page-input {
