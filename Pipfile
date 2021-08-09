@@ -13,6 +13,8 @@ numpy = "*"
 reportlab = "*"
 xhtml2pdf = "*"
 django-easy-pdf = "*"
+whitenoise = "*"
+gunicorn = "*"
 
 [dev-packages]
 
