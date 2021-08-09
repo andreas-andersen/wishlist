@@ -85,7 +85,7 @@ def received_lists_view(request, user_id):
     if user_id == request.user.id:
         current_user = CustomUser.objects.get(id=user_id)
         responsible_users = CustomUser.objects.filter(responsible_by=current_user)
-        current_groups = CustomGroup.objects.filter(user=current_user)
+        current_groups = CustomGroup.objects.filter(user=current_user).filter(closed='True')
         current_assignments = Assignments.objects.filter(group__in=current_groups)
 
         data = [
@@ -95,7 +95,7 @@ def received_lists_view(request, user_id):
             for assignments in current_assignments
         ]
 
-        return render(request, 'wish/received_lists.html', {'data': data})
+        return render(request, 'wish/my_received_lists.html', {'data': data})
 
     else:
         return HttpResponseForbidden()
@@ -143,7 +143,7 @@ def notifications_center_view(request, user_id):
         unread_notifications = (
             Notification.objects.filter(user=current_user).filter(read=False))
         recent_notifications = (
-            Notification.objects.filter(user=current_user).filter(read=True))[:10]
+            Notification.objects.filter(user=current_user).filter(read=True)).order_by('-created')[:10]
         user_notifications = unread_notifications.union(recent_notifications).order_by('-created')
 
         return render(

@@ -34,13 +34,6 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractUser):
     username = None
-    #groups = models.ManyToManyField(
-    #    'groups.CustomGroup',
-    #    verbose_name='groups',
-    #    blank=True,
-    #    related_name="user_set",
-    #    related_query_name="user",
-    #)
     email = models.EmailField(
         'email address',
         blank=False,

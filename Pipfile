@@ -10,6 +10,9 @@ django-utils-six = "*"
 six = "*"
 psycopg2 = "*"
 numpy = "*"
+reportlab = "*"
+xhtml2pdf = "*"
+django-easy-pdf = "*"
 
 [dev-packages]
 

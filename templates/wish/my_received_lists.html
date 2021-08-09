@@ -35,7 +35,7 @@
                     {% for member, assignment in assignments %}
                         <tr class="list-entry">
                             <td class="received-list-name">
-                                <a href="" class="list-item-title">
+                                <a href="{% url 'received_list' group.group.id member.id %}" class="list-item-title">
                                     {{ member.first_name }} {{ member.last_name }}
                                 </a>
                             </td>

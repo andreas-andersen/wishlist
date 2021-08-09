@@ -35,9 +35,12 @@
 
     <div class="list-container">
         {% if not current_group.closed %}
-            <div class="list-title plain-title">
-                <div>
+            <div class="list-title subtitle-title">
+                <div class="list-title-title">
                     Group members
+                </div>
+                <div class="list-title-subtitle">
+                    Deadline: {{ current_group.deadline }}
                 </div>
             </div>
         {% else %}
@@ -68,7 +71,7 @@
                 </tr>
                 <tr class="list-entry {% if current_group.leader == user %}list-entry-important{% endif %}">
                     <td class="members-list-email">
-                        <a href="" class = "item-title">
+                        <a href="mailto:{{ current_group.leader.email }}" class = "item-title" target = "_blank">
                             {{ current_group.leader.get_email_30char }}
                         </a>
                     </td>
@@ -88,7 +91,7 @@
                     <tr class="list-entry {% if current_group.leader == user %}list-entry-important{% endif %}">
                         <td class="members-list-email">
                             {% if user.is_self_responsible %}
-                                <a href="" class = "item-title">
+                                <a href="mailto:{{ user.email }}" class = "item-title"  target = "_blank">
                                     {{ user.get_email_30char }}
                                 </a>
                             {% endif %}

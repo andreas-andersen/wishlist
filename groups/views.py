@@ -368,8 +368,9 @@ def select_assignment_view(request, group_id):
         return render(
             request, 'group/assignment/select.html', 
             {
-                'group_id': group_id, 'has_members': has_members,
-                'past_deadline': past_deadline, 'has_wishlists': has_wishlists}
+                'group_id': group_id, 'group_name': current_group.name, 
+                'has_members': has_members, 'past_deadline': past_deadline, 
+                'has_wishlists': has_wishlists}
         )
 
 @login_required

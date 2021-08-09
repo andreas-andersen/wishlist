@@ -17,7 +17,7 @@ body {
 .main {
     position: relative;
     min-height: 100%;
-    padding: 0 0 5em 0;
+    padding: 0 0 0 0;
 }
 
 h1 {
@@ -36,9 +36,19 @@ h2 {
     justify-content: space-between;
     align-items: center;
     z-index: 2;
-    height: 2em;
+    height: 2.5em;
     font-weight: 300;
     font-size: 2em;
+}
+
+.page-title-main-title {
+    font-size: 1em;
+}
+
+.page-title-main-subtitle {
+    font-size: 0.5em;
+    font-weight: 500;
+    margin: 0 0 0.5em 0;
 }
 
 h3 {
@@ -399,12 +409,12 @@ i {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    left: -6em;
+    left: -5em;
     top: 0em;
-    height: 2em;
+    height: 5em;
     width: 4.2em;
     align-items: center;
-    padding: 1em;
+    /* padding: 1em; */
 }
 
 .back a {
@@ -453,6 +463,10 @@ i {
     text-align: left;
 }
 
+.info-page-reset-password-form {
+    margin: 1em 0 0 0;
+}
+
 .info-page-notifications {
     width: 100%;
     height: 100%;
@@ -498,6 +512,10 @@ i {
     height: 100%;
 }
 
+.info-page-notification-priority {
+    margin: 0 2em 0 0;
+}
+
 .read {
     opacity: 40%;
 }
@@ -509,7 +527,7 @@ i {
 
 .info-page-notification-action {
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
     justify-content: space-between;
     align-items: center;
     min-width: 10em;
@@ -720,6 +738,12 @@ tr.list-entry-important td {
     margin: 0.5em 1em 0.25em 1em;
 }
 
+.form-page-titleplus {
+    font-size: 1em;
+    font-weight: 500;
+    margin: -0.5em 1em 0.25em 2em;
+}
+
 .form-page-form {
     width: 100%;
     box-sizing: border-box;
@@ -830,7 +854,6 @@ tr.list-entry-important td {
 
 .form-page-assignment-checklist-container {
     width: 100%;
-    margin: 1.5em 0 0 0;
 }
 
 .form-page-assignment-checklist {

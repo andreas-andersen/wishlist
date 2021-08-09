@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="back">
+        <a href="{% url 'received_lists' user.id %}"><i class="fi-rr-angle-double-left"></i></a>
+    </div>
+
+    <div class="page-title">
+        <div class="page-title-main">
+            <div class="page-title-main-title">Wish list for {{ current_author }}</div>
+            <div class="page-title-main-subtitle">Assigned to: {{ current_assignment }}</div>
+        </div>
+        <div class="printout">
+            <a href="{% url 'received_list_printout' current_group.id current_author.id %}"><i class="fi-rr-print"></i></a>
+        </div>
+    </div>
+
+    <div class="info-page">
+        <div class="info-page-notifications">
+            {% for wish in object_list %}
+                <div class="info-page-notification-entry">
+                    <div class="info-page-notification-content">
+                        <div class="info-page-notification-content-title">
+                            <b>{{ wish.title }}</b> 
+                        </div>
+                        <div class="info-page-notification-content-details">
+                            {{ wish.details }}
+                        </div>
+                    </div>
+                    <div class="info-page-notification-priority">
+                        {% if wish.priority %}
+                            Priority: {{ wish.get_priority_display }}
+                        {% endif %}
+                    </div>
+                    <div class="info-page-notification-link">
+                        {% if wish.link %}
+                            <a href="{{ wish.link }}" target="_blank">link</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

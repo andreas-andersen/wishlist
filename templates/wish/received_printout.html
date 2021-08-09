@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+    <head>
+        <style type="text/css">
+
+            @page {
+                size: letter portrait;
+                margin: 2cm;
+                @frame header_frame {
+                    -pdf-frame-content: header_content;
+                    left: 50pt;
+                    width: 512pt;
+                    top: 50pt;
+                    height: 50pt;
+                }
+                @frame content_frame {
+                    left: 50pt; width: 512pt; top: 110pt; height: 632pt;
+                }
+            }
+
+            body {
+                width: 100%;
+                font-family: 'Open Sans', sans-serif;
+                font-weight: 200;
+                background-color: white;
+            }
+
+            #title {
+                background-color: #D90429;
+                color: #FFFFFF;
+                font-size: 3em;
+                padding-top: 0.6em;
+            }
+
+            #user {
+                font-size: 2em;
+                padding: 1em 0 0.5em 0;
+            }
+
+            #group {
+                font-size: 1.5em;
+                padding: 0 0 0.5em 0;
+            }
+
+            #table {
+                margin: 0 1em 0 5em;
+            }
+
+            tr {
+                padding: 0 0 0.5em 0;
+            }
+
+            td {
+                background-color: #EDF2F4;
+            }
+
+            #top {
+                font-weight: bold;
+                padding: 0.5em 0 0.5em 0;
+            }
+
+            #wish-title {
+                width: 20%;
+            }
+
+            #wish-details {
+                width: 60%;
+            }
+
+            #wish-priority {
+                width: 20%;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div id="header_content">
+            <div id="title" align="center">{wishlist.app}</div>
+        </div>
+        <div id="container">
+            <div id="content">
+                <div id="user">Wish list for {{ current_author }}</div>
+                <div id="group">Assigned to: {{ current_assignment }}<br>Group: {{ current_group }}</div>
+                <table id="table">
+                    <tr id="top">
+                        <td id="wish-title">
+                            Title
+                        </td>
+                        <td id="wish-details">
+                            Details
+                        </td>
+                        <td id="wish-priority">
+                            Priority
+                        </td>
+                    </tr>
+                    {% for wish in current_wishes %}
+                        <tr>
+                            <td id="wish-title">
+                                {{ wish.title }}
+                            </td>
+                            <td id="wish-details">
+                                {{ wish.details }}
+                            </td>
+                            <td id="wish-priority">
+                                {{ wish.get_priority_display }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </body>
+
+</html>
