@@ -102,7 +102,10 @@ class CustomUser(AbstractUser):
         return len(responsibilities) > 1
 
     def __str__(self):
-        return self.first_name + ' ' + self.last_name
+        if self.first_name == None and self.last_name == None:
+            return ' '
+        else:
+            return self.first_name + ' ' + self.last_name
 
 
 class Notification(models.Model):

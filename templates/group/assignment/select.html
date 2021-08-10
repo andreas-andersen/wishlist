@@ -41,6 +41,15 @@
                         <div><b>Not all members have filled in their wish lists</b></div>
                     {% endif %}
                 </div>
+                <div class="checklist-item">
+                    {% if not has_invited %}
+                        <div><span class="yes-icon"><i class="fi-rr-check"></i></span></div>
+                        <div>You have no invited users pending confirmation</div>
+                    {% else %}
+                        <div><span class="no-icon"><i class="fi-rr-cross"></i></span></div>
+                        <div><b>You have users pending confirmation</b></div>
+                    {% endif %}
+                </div>
             </div>
         </div>
         <form class="form-page-form" method="post">{% csrf_token %}
@@ -186,7 +195,7 @@
                 </div>
             </div>
             <div>
-                {% if has_members and past_deadline and has_wishlists %}
+                {% if has_members and past_deadline and has_wishlists and not has_invited %}
                     <button class="form-page-submit" type="submit">Select</button>
                 {% else %}
                     <button class="form-page-submit-inactive" disabled>Select</button>

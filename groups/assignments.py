@@ -31,6 +31,9 @@ def userwise_assignment(array):
         array[3:5, :] = 0
         array[2, :] = 0
 
+    if get_most_common_responsible(array) > array.shape[1] / 2:
+        return random_assignment(array)
+
     for i in range(array.shape[1]):
         unassigned_users = get_unassigned_users(array)
         not_received_assignment_users = get_not_received_assignment_users(array)

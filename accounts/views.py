@@ -1,5 +1,6 @@
 from django.urls import reverse_lazy
 from django.http.response import HttpResponseForbidden
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -26,18 +27,33 @@ from django.contrib.auth.views import LoginView, PasswordChangeView
 
 class CustomUserSignupView(CreateView):
     form_class = CustomUserSignupForm
-    success_url = reverse_lazy('home')
     template_name = 'registration/signup.html'
+
+    def get_success_url(self):
+        return reverse_lazy('login_user')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.is_leader = True
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 class CustomUserLoginView(LoginView):
     authentication_form = CustomUserLoginForm
     success_url = reverse_lazy('home')
     template_name = 'registration/login.html'
 
-class CustomUserDetailsView(LoginRequiredMixin, DetailView):
+class CustomUserDetailsView(
+        LoginRequiredMixin, 
+        UserPassesTestMixin,
+        DetailView
+    ):
     model = CustomUser
     context_object_name = 'user_details'
     template_name = 'user/details.html'
+
+    def test_func(self):
+        return self.request.user == CustomUser.object.get(id=self.kwargs['pk'])
 
     def get_context_data(self, **kwargs):
         data = super(CustomUserDetailsView, self).get_context_data(**kwargs)
@@ -86,7 +102,7 @@ def received_lists_view(request, user_id):
         current_user = CustomUser.objects.get(id=user_id)
         responsible_users = CustomUser.objects.filter(responsible_by=current_user)
         current_groups = CustomGroup.objects.filter(user=current_user).filter(closed='True')
-        current_assignments = Assignments.objects.filter(group__in=current_groups)
+        current_assignments = Assignments.objects.filter(group__in=current_groups).order_by('-time')
 
         data = [
             (assignments, 
@@ -100,15 +116,6 @@ def received_lists_view(request, user_id):
     else:
         return HttpResponseForbidden()
 
-
-class RecWishListsView(LoginRequiredMixin, ListView):
-    model = CustomUser
-    context_object_name = 'received_lists'
-    template_name = 'wish/received_lists.html'
-
-    def get_queryset(self):
-        matched_responsibilities = CustomUser.objects.filter(responsible_by=self.request.user)
-        return CustomUser.objects.filter(assigned_to__in=matched_responsibilities)
 
 @login_required        
 def complete_user_activation(request, user_id):

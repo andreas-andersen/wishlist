@@ -158,8 +158,8 @@ class ReceivedWishListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         current_group = CustomGroup.objects.get(id=self.kwargs['group_id'])
         responsible_users = current_group.user_set.filter(responsible_by=self.request.user)
         current_assignments = Assignments.objects.get(group=current_group)
-        current_assignment = current_assignments.assignments.get(assignment=current_user)
-        return current_assignment.member in responsible_users
+        current_assignment = current_assignments.assignments.get(member=current_user)
+        return current_assignment.assignment in responsible_users
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)

@@ -5,6 +5,7 @@
         <title>Wishlist.app</title>
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
         <link rel="stylesheet" href="{% static 'css/uicons.css' %}">
+        <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
         <script src="{% static 'js/dropdown.js' %}"></script>
         {% block head %}
         {% endblock head %}
@@ -22,10 +23,10 @@
                                 <a href="{% url 'my_lists' user.id %}">My lists</a>
                             </div>
                             <div class="navbar-item">
-                                <a href="{% url 'received_lists' user.id %}">Received lists</a>
+                                <a href="{% url 'my_received_lists' user.id %}">Received lists</a>
                             </div>
                             <div class="navbar-item">
-                                <a href="{% url 'my_groups' %}">My Groups</a>
+                                <a href="{% url 'my_groups'%}">My Groups</a>
                             </div>
                         {% endif %}
                         </div>
@@ -91,7 +92,7 @@
                 </div>
                 <div class="bottom">
                     <div>
-                        Copyright 2021
+                        Copyright 20&copy;21
                     </div>
                 </div>
             </footer>

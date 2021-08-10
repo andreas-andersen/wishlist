@@ -41,6 +41,17 @@ h2 {
     font-size: 2em;
 }
 
+.home-page-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2;
+    height: 2.5em;
+    font-weight: 300;
+    font-size: 2.5em;
+}
+
 .page-title-main-title {
     font-size: 1em;
 }
@@ -414,7 +425,6 @@ i {
     height: 5em;
     width: 4.2em;
     align-items: center;
-    /* padding: 1em; */
 }
 
 .back a {
@@ -427,6 +437,69 @@ i {
 
 .content {
     margin: 5em auto 0 auto;
+}
+
+.home-page-selection {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: stretch;
+    height: 100%;
+    margin: 1em 0em 0em 0em;
+}
+
+.home-page-selection div {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.home-page-selection-top {
+    margin: 0em 0em 2em 0em;
+}
+
+.home-page-selection-section {
+    width: 50%;
+    background-color: white;
+    border-radius: 1em;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    margin: 0em 4em 0em 4em;
+    padding: 1em;
+}
+
+.home-page-selection-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+}
+
+.big-icon {
+    font-size: 4em;
+}
+
+.big-icon a {
+    color: #2B2D42;
+}
+
+.home-page-selection-title {
+    font-size: 1.5em;
+}
+
+.home-page-selection-title a {
+    color: #2B2D42
+}
+
+.home-page-selection-description {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin: 1.5em 0 0 0;
+}
+
+.home-page-selection-description a {
+    display: inline;
+    margin: 1.5em 0 0 0;
 }
 
 .form-page {
@@ -453,7 +526,7 @@ i {
     border-radius: 0.4em;
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
     padding: 0.5em;
-    margin: 1.5em auto 0 auto;
+    margin: 1.5em auto 8em auto;
 }
 
 .info-page {
@@ -461,6 +534,7 @@ i {
     display: flex;
     flex-direction: column;
     text-align: left;
+    margin: 0 0 8em 0;
 }
 
 .info-page-reset-password-form {
@@ -610,9 +684,57 @@ i {
     margin: 0.5em 0 0 0;
 }
 
+.list-closed {
+    width: 100%;
+    text-align: center;
+    z-index: 0;
+    background-color: whitesmoke;
+    border-spacing: 0em 0.05em;
+    border-collapse: separate;
+    border-radius: 0.4em;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    margin: 0.5em 0 8em 0;
+}
+
+.group-info-container {
+    width: 100%;
+    margin: 0 auto 4em auto;
+}
+
+.group-info {
+    width: 100%;
+    border-spacing: 0em;
+    border-collapse: separate;
+    text-align: center;
+}
+
+.group-info td {
+    padding: 0.5em;
+}
+
+.group-info-titles {
+    font-weight: 600;
+}
+
+.group-info-titles td {
+    border-bottom: 0.1em solid gray;
+}
+
+.group-info-deadline {
+    width: 50%;
+}
+
+.group-info-value {
+    width: 50%;
+}
+
 .list-container-container .list-container:first-child {
     position: relative;
     margin: 3em auto 1em auto;
+}
+
+.list-container-container {
+    margin: 0 0 8em 0;
 }
 
 .list-container-container .list-container {
@@ -703,6 +825,14 @@ tr.list-entry-important td {
     padding: 0.1em 1.5em 0 1.5em;
 }
 
+.received-list-name {
+    width: 50%;
+}
+
+.received-list-assigned {
+    width: 50%;
+}
+
 .noted-list-note-container {
     position:absolute;
     display: flex;
@@ -728,7 +858,6 @@ tr.list-entry-important td {
 .form-page-form-container {
     background-color: whitesmoke;
     border-radius: 0.5em;
-    border: 0.1em solid #EF233C;
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
     padding: 2em;
 }
@@ -776,6 +905,14 @@ tr.list-entry-important td {
     justify-content: flex-start;
     align-items: center;
     margin: 0.5em 0 0 0;
+}
+
+.assignment-confirmation {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 1em 0 0 0;
+    padding: 0 1em 2em 1em;
+    text-align: center;
 }
 
 .form-selector-space{
@@ -853,6 +990,10 @@ tr.list-entry-important td {
 }
 
 .form-page-assignment-checklist-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100%;
 }
 
@@ -862,7 +1003,6 @@ tr.list-entry-important td {
     justify-content: center;
     align-items: stretch;
     border-radius: 1em;
-    width: 20em;
     margin: 1em auto 1.5em auto;
     padding: 1.5em 2em 2em 2em;
 }
@@ -890,7 +1030,7 @@ tr.list-entry-important td {
 }
 
 .checklist-item div:first-child {
-    width: 20%;
+    width: 3em;
 }
 
 .assignment-choice {

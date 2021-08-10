@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="back">
+        <a href="{% url 'select_assignment' group_id %}"><i class="fi-rr-angle-double-left"></i></a>
+    </div>
+
+    <div class="form-page-large">
+        <span class="form-page-title">Confirm assignment</span>
+        <div class="form-page-assignment-direction">
+            Assigned to
+            <i class="fi-rr-arrow-small-right"></i>
+        </div>
+        <div class="assignment-confirmation" method="post">{% csrf_token %}
+            {% for member, assignment in output %}
+                <div class="form-double-space">
+                    <span class="form-page-member">
+                        {{ member.first_name }} {{ member.last_name }}
+                    </span>
+                    <span class="form-page-assignment">
+                        {{ assignment.first_name }} {{ assignment.last_name }}
+                    </span>
+                </div>
+            {% endfor %}
+            <div>
+                <button onclick="location.href='{% url 'assign' group_id %}'"
+                    class="form-page-submit" type="button">Confirm assignment</button>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

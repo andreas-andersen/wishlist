@@ -89,6 +89,10 @@ class GroupMembersListView(
         group_leader = group.leader
         return group.user_set.all().exclude(id=group_leader.id).order_by('date_joined')
 
+    def test_func(self):
+        group = CustomGroup.objects.get(id=self.kwargs['pk'])
+        return self.request.user in group.user_set.all() 
+
     def get_context_data(self, **kwargs):
         data = super(GroupMembersListView, self).get_context_data(**kwargs)
         group = CustomGroup.objects.get(id=self.kwargs['pk'])
@@ -100,10 +104,6 @@ class GroupMembersListView(
         data['invite_form'] = GroupMemberInviteForm()
         data['create_form'] = GroupMemberCreateForm()
         return data
-
-    def test_func(self):
-        group = CustomGroup.objects.get(id=self.kwargs['pk'])
-        return self.request.user in group.user_set.all() 
 
 
 @login_required
@@ -163,7 +163,8 @@ def group_member_invite_view(request, group_id, user_id):
                     current_site = get_current_site(request)
                     mail_subject = 'You have received an invitation from Wishlist.app!'
                     message = render_to_string('registration/invitation_email.html', {
-                        'user': new_user,
+                        'current_user': current_user,
+                        'current_group': current_group,
                         'domain': current_site.domain,
                         'uid': urlsafe_base64_encode(force_bytes(new_user.pk)),
                         'token': invitation_token.make_token(new_user),
@@ -323,7 +324,10 @@ def remove_user_from_group(request, group_id, user_id):
             current_user.responsible_by == request.user) and not
                 current_group.closed):
         current_group.user_set.remove(current_user)
-        return redirect('group_members', group_id)
+        if current_group.leader == request.user:
+            return redirect('group_members', group_id)
+        else: 
+            return redirect('home')
     else:
         return HttpResponseForbidden()
         
@@ -333,6 +337,7 @@ def uninvite_user_from_group(request, group_id, user_id):
     current_user = CustomUser.objects.get(id=user_id)
     if current_group.leader == request.user and not current_group.closed:
         current_group.invited_users.remove(current_user)
+        current_user.delete()
         return redirect('group_members', group_id)        
     else:
         return HttpResponseForbidden()
@@ -364,13 +369,15 @@ def select_assignment_view(request, group_id):
             has_wishlists = all(
                 [len(Wish.objects.filter(author=user).filter(group=current_group)) > 0 
                     for user in current_group.user_set.all()])
+            has_invited = len(current_group.invited_users.all())
 
         return render(
             request, 'group/assignment/select.html', 
             {
                 'group_id': group_id, 'group_name': current_group.name, 
                 'has_members': has_members, 'past_deadline': past_deadline, 
-                'has_wishlists': has_wishlists}
+                'has_wishlists': has_wishlists, 'has_invited': has_invited
+            }
         )
 
 @login_required
@@ -388,7 +395,7 @@ def manual_assignment_view(request, group_id):
 
                 request.session['assignments'] = assignments
                 return render(
-                    request, 'group/assignment/manual_output.html',
+                    request, 'group/assignment/output.html',
                     {'output': output, 'group_id': group_id}
                 )
         else:
@@ -417,7 +424,7 @@ def random_assignment_view(request, group_id, userwise):
 
                 request.session['assignments'] = assignments
                 return render(
-                    request, 'group/assignment/manual_output.html',
+                    request, 'group/assignment/output.html',
                     {'output': output, 'group_id': group_id}
                 )
         
@@ -466,7 +473,7 @@ def assign(request, group_id):
             new_assignment.save()
             new_assignments.assignments.add(new_assignment)
 
-            responsible_user = assignment.responsible_by,
+            responsible_user = assignment.responsible_by
             new_notification = Notification(
                 user=responsible_user,
                 type='ETC',
@@ -474,7 +481,7 @@ def assign(request, group_id):
                 content=(
                     f'<b>{member.first_name} {member.last_name}</b> has been assigned to you in the group ' 
                     f'''<a href="{reverse('group_members', kwargs={'pk': group_id})}">{current_group.name}</a>!'''
-                    f'''<br>Check out the <a href="{reverse('received_lists', kwargs={'user_id': responsible_user.id})}">'''
+                    f'''<br>Check out the <a href="{reverse('my_received_lists', kwargs={'user_id': responsible_user.id})}">'''
                     f'Received Lists</a> page for details!')
             )
             new_notification.save()

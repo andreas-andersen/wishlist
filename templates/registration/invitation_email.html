@@ -1,5 +1,12 @@
 {% autoescape off %}
-Hi {{ user.username }},
-Please click on the link to confirm your registration,
+Hi!
+
+You have been invited by {{ current_user.first_name }} {{ current_user.last_name }} to join the group {{ current_group.name }} on Wishlist.app!
+
+Please follow the link below to confirm your registration:
 http://{{ domain }}{% url 'accept_invitation' uidb64=uid token=token %}
+
+
+Best regards,
+The Wishlist.app team
 {% endautoescape %}

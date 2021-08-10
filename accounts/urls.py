@@ -25,5 +25,5 @@ urlpatterns = [
     path('<int:user_id>/mark_all_as_read/', mark_all_as_read_view, name='mark_all_as_read'),
     path('<int:user_id>/notifications_history/', NotificationsHistoryView.as_view(), name='notifications_history'),
     path('<int:user_id>/my_lists', my_wish_lists_view, name='my_lists'),
-    path('<int:user_id>/received_lists/', received_lists_view, name='received_lists'),
+    path('<int:user_id>/received_lists/', received_lists_view, name='my_received_lists'),
 ]

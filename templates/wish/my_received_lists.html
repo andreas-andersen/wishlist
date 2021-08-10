@@ -27,9 +27,6 @@
                         <td class="received-list-assigned">
                             Assigned to
                         </td>
-                        <td class="received-list-deadline">
-                            Deadline
-                        </td>
                     </tr>
                 
                     {% for member, assignment in assignments %}
@@ -41,9 +38,6 @@
                             </td>
                             <td class="received-list-assigned">
                                 {{ assignment.first_name }} {{ assignment.last_name }}
-                            </td>
-                            <td class="received-list-deadline">
-                                {{ group.deadline }}
                             </td>
                         </tr>
                     {% endfor %}

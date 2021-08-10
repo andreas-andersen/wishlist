@@ -3,11 +3,72 @@
 
 {% block content %}
     {% if user.is_authenticated %}
-        <div class="page-title">Hi, {{ screen_name }}!</div>
-        <p>Click on <b>"My lists"</b> link from the menu above to navigate to create your wish list.<br>
-        You will receive a notification when you have been assigned a wish list from someone else.<br>
-        This can be accessed through the <b>"Received lists"</b> link.</p>
+        <div class="home-page-title">Hi, {{ screen_name }}!</div>
+        <div class="home-page-selection">
+            <div class="home-page-selection-top">
+                <div class="home-page-selection-section">
+                    <div class="home-page-selection-content">
+                        <div class="big-icon">
+                            <a href="{% url 'my_lists' user.id %}"><i class="fi-rr-list"></i></a>
+                        </div>
+                        <div class="home-page-selection-title">
+                            <a href="{% url 'my_lists' user.id %}">My lists</i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="home-page-selection-section">
+                    <div class="home-page-selection-content">
+                        <div class="big-icon">
+                            <a href="{% url 'my_received_lists' user.id %}"><i class="fi-rr-list-check"></i></a>
+                        </div>
+                        <div class="home-page-selection-title">
+                            <a href="{% url 'my_received_lists' user.id %}">Received lists</i></a>
+                        </div>
+                        <div class="home-page-selection-description">
+                            {% if number_of_assignments %}
+                                <span>You have {{ number_of_assignments }} 
+                                    received list{% if number_of_assignments > 1 %}s{% endif %}!
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="home-page-selection-bottom">
+                <div class="home-page-selection-section">
+                    <div class="home-page-selection-content">
+                        <div class="big-icon">
+                            <a href="{% url 'my_groups' %}"><i class="fi-rr-users"></i></a>
+                        </div>
+                        <div class="home-page-selection-title">
+                            <a href="{% url 'my_groups' %}">My Groups</i></a>
+                        </div>
+                        <div class="home-page-selection-description">
+                            {% if not current_groups %}
+                                <span>You are not a member of any active groups.</span>
+                                {% if user.leader %}
+                                    <span>Maybe you want to <a href="{% url 'create_group' %}">create one?</a></span>
+                                {% endif %}
+                            {% else %}
+                                You are currently member of {{ current_groups|length }} 
+                                    group{% if current_groups|length > 1 %}s{% endif %})!
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="home-page-selection-section">
+                    <div class="home-page-selection-content">
+                        <div class="big-icon">
+                            <a href=""><i class="fi-rr-info"></i></a>
+                        </div>
+                        <div class="home-page-selection-title">
+                            <a href="">Placeholder</i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% else %}
-        <div class="page-title">Please log in with your username and password (see email)</div>
+        <div class="home-page-title">Welcome to Wishlist.app!</div>
     {% endif %}
 {% endblock content %}

@@ -33,14 +33,32 @@
         {% endif %}
     </div>
 
+    <div class="group-info-container">
+        <table class="group-info">
+            <tr class="group-info-titles">
+                <td class="group-info-deadline">
+                    Deadline
+                </td>
+                <td class="group-info-value">
+                    Gift value limit
+                </td>
+            </tr>
+            <tr class="group-info-data">
+                <td class="group-info-deadline">
+                    {{ current_group.deadline }}
+                </td>
+                <td class="group-info-value">
+                    {{ current_group.max_gift_value }} {{ current_group.get_currency_display }}
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <div class="list-container">
         {% if not current_group.closed %}
             <div class="list-title subtitle-title">
                 <div class="list-title-title">
                     Group members
-                </div>
-                <div class="list-title-subtitle">
-                    Deadline: {{ current_group.deadline }}
                 </div>
             </div>
         {% else %}
@@ -55,7 +73,7 @@
         {% endif %}
 
         {% if leader %}
-            <table class="list">
+            <table class="{% if not current_group.closed %} list {% else %} list-closed {% endif %}">
                 <tr class="list-top">
                     <td class="members-list-email">
                         Email
@@ -135,7 +153,7 @@
                     <td class="members-list-actions">
                     </td>
                 </tr>
-                <tr class="list-entry {% if current_group.leader == user %}list-entry-important{% endif %}">
+                <tr class="list-entry list-entry-important">
                     <td class="members-list-name">
                         {{ current_group.leader.first_name }} {{ current_group.leader.last_name }}
                     </td>
@@ -149,7 +167,7 @@
                     </td>
                 </tr>
                 {% for user in object_list %}
-                    <tr class="list-entry {% if current_group.leader == user %}list-entry-important{% endif %}">
+                    <tr class="list-entry">
                         <td class="members-list-name-user">
                             {{ user.first_name }} {{ user.last_name }}
                         </td>
